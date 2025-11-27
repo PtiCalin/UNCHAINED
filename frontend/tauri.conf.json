@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/v1/schema.json",
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devPath": "http://localhost:5173",
+    "distDir": "dist"
+  },
+  "package": {
+    "productName": "UNCHAINED",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "notification": {
+        "all": true
+      },
+      "shell": {
+        "all": false
+      }
+    },
+    "systemTray": {
+      "iconPath": "icons/icon.ico",
+      "menu": [
+        { "id": "open_library", "title": "Open Library" },
+        { "id": "import_folder", "title": "Import Folder" },
+        { "id": "exit", "title": "Exit" }
+      ]
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "UNCHAINED",
+        "width": 1200,
+        "height": 800
+      }
+    ]
+  }
+}

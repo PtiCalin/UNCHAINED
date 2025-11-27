@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi import BackgroundTasks
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, List
 from pathlib import Path
@@ -25,6 +26,10 @@ LIBRARY_METADATA = Path("library/metadata").resolve()
 
 router = APIRouter()
 init_db(LIBRARY_DB)
+
+# Simple in-memory event broadcaster for SSE
+import asyncio
+event_queue: asyncio.Queue = asyncio.Queue()
 
 class SpotifyImportRequest(BaseModel):
     playlist_url: str
@@ -216,6 +221,30 @@ async def metadata_diff(track_id: int, temp_ref: Optional[str] = None):
     if temp_ref:
         candidates = fetch_candidates_by_temp_ref(temp_ref)
     return {"current": current, "attribution": attribution, "candidates": candidates}
+
+# --- Server-Sent Events (SSE) for backend -> frontend notifications ---
+async def sse_event_stream():
+    while True:
+        payload = await event_queue.get()
+        yield f"data: {payload}\n\n"
+
+@router.get("/events/stream")
+async def events_stream():
+    return StreamingResponse(sse_event_stream(), media_type="text/event-stream")
+
+class EmitEvent(BaseModel):
+    type: str  # upload_complete | download_finished | info
+    message: Optional[str] = None
+    track_id: Optional[int] = None
+
+@router.post("/events/emit")
+async def events_emit(body: EmitEvent):
+    # Minimal validation
+    if body.type not in {"upload_complete", "download_finished", "info"}:
+        raise HTTPException(status_code=400, detail="Invalid event type")
+    payload = {"type": body.type, "message": body.message, "track_id": body.track_id}
+    await event_queue.put(__import__("json").dumps(payload))
+    return {"status": "queued"}
 
 class ArtworkCreate(BaseModel):
     cover_url: Optional[str] = None
