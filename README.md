@@ -1,2 +1,2 @@
 # UNCHAINED
-Post-modern music management software
+Post-modern audio management software
