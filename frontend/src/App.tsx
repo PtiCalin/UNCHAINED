@@ -1,29 +1,35 @@
-import { useEffect } from 'react'
-import { Link, Routes, Route } from 'react-router-dom'
-import TrackList from './components/TrackList'
-import MetadataTool from './components/MetadataTool'
+import { Routes, Route } from 'react-router-dom'
 import MetadataDiff from './components/MetadataDiff'
+import { AppShell } from './layouts/AppShell'
+import SpotifyHome from './views/spotify/Home'
+import ITunesPro from './views/itunesPro/Index'
+import VinylTimeline from './views/vinylCollector/Timeline'
+import MinimalPlayer from './views/minimalPlayer/Index'
+import AnalyticsIndex from './views/analytics/Index'
+import DJStudio from './views/djStudio/Studio'
 
 export default function App() {
-  useEffect(() => {
-    // placeholder for app init
-  }, [])
   return (
-    <div className="min-h-screen">
-      <header className="px-4 py-3 border-b border-neutral-800 flex items-center gap-4">
-        <h1 className="text-xl font-semibold">UNCHAINED</h1>
-        <nav className="flex gap-3 text-sm">
-          <Link to="/" className="hover:underline">Library</Link>
-          <Link to="/metadata" className="hover:underline">Metadata</Link>
-        </nav>
-      </header>
-      <main className="p-4">
-        <Routes>
-          <Route path="/" element={<TrackList />} />
-          <Route path="/metadata" element={<MetadataTool />} />
-          <Route path="/metadata/diff/:trackId" element={<MetadataDiff />} />
-        </Routes>
-      </main>
-    </div>
+    <Routes>
+      <Route
+        path="/studio"
+        element={<DJStudio />}
+      />
+      <Route
+        path="/*"
+        element={
+          <AppShell>
+            <Routes>
+              <Route path="/" element={<SpotifyHome />} />
+              <Route path="/pro" element={<ITunesPro />} />
+              <Route path="/vinyl" element={<VinylTimeline />} />
+              <Route path="/minimal" element={<MinimalPlayer />} />
+              <Route path="/analytics" element={<AnalyticsIndex />} />
+              <Route path="/metadata/diff/:trackId" element={<MetadataDiff />} />
+            </Routes>
+          </AppShell>
+        }
+      />
+    </Routes>
   )
 }
