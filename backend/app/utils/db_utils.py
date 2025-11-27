@@ -110,6 +110,45 @@ def init_db(db_path: Path):
         )
         """
     )
+    # Multiple artworks per track
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS track_artworks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            path_cover TEXT,
+            source TEXT,
+            is_primary INTEGER DEFAULT 0,
+            created_at TEXT
+        )
+        """
+    )
+    # Relations between tracks (remix/edit/version/sample/release grouping)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS track_relations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            related_track_id INTEGER,
+            relation_type TEXT,
+            created_at TEXT
+        )
+        """
+    )
+    # Samples table (audio slices derived from a track) if not exists
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS samples (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            start_ms INTEGER,
+            end_ms INTEGER,
+            path_audio TEXT,
+            pad_index INTEGER,
+            created_at TEXT
+        )
+        """
+    )
     conn.commit()
     conn.close()
 
