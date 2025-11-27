@@ -33,6 +33,7 @@ Frontend (React + Tailwind + Tauri) scaffolding will be added next.
 - `scripts/setup-dev.ps1`: create venv, install backend dependencies
 - `scripts/run-backend.ps1`: start FastAPI at `http://127.0.0.1:8000`
 - `scripts/run-frontend.ps1`: start Vite at `http://localhost:5173`
+- `scripts/run-download-worker.ps1`: process queued download jobs
 
 ## Environment Variables
 Backend (`config/.env`):
@@ -51,6 +52,16 @@ Frontend (`frontend/.env` optional):
 ## Community & Contributions
 - Issues and PRs welcome
 - PR template: see `.github/PULL_REQUEST_TEMPLATE.md`
+
+## Source Imports (Legal)
+- Spotify: supported for metadata and playlists via `/sources/spotify/playlists/import`. Audio downloads from Spotify are not supported.
+- iTunes/Apple Music: import local iTunes library XML and copy referenced files via `/sources/itunes/library/import`.
+- Bandcamp: queue authorized download links you provide via `/sources/bandcamp/collection/import` or `/sources/downloads/queue`. Downloader will fetch HTTP URLs you own access to.
+
+After queueing downloads, run:
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\run-download-worker.ps1
+```
 
 ## Project Vision
 UNCHAINED is a local-first, privacy-respecting music library and DJ studio designed to work offline, then scale to the web without rewrites. Core subsystems: Media Storage, Analysis Engine, Audio Playback & DJ Engine, FastAPI backend, React/Tauri frontend.

@@ -25,6 +25,39 @@ def init_db(db_path: Path):
         )
         """
     )
+    # External tracks indexed from sources like Spotify/Bandcamp (metadata only)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS external_tracks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            source TEXT,
+            external_id TEXT,
+            isrc TEXT,
+            title TEXT,
+            artist TEXT,
+            album TEXT,
+            url_audio TEXT,
+            url_cover TEXT,
+            status TEXT,
+            mapped_track_id INTEGER
+        )
+        """
+    )
+    # Simple download jobs queue for authorized URLs
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS download_jobs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT,
+            dest_path TEXT,
+            status TEXT,
+            error TEXT,
+            created_at TEXT,
+            started_at TEXT,
+            finished_at TEXT
+        )
+        """
+    )
     conn.commit()
     conn.close()
 
