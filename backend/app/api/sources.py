@@ -15,6 +15,9 @@ from ..services.local_scan_service import scan_local_folder
 from ..services.metadata_quality_service import aggregate_metadata, persist_candidates, derive_temp_ref, choose_best, apply_candidate, fetch_candidates_by_temp_ref
 from ..services.metadata_provenance_service import get_attribution, revert_field
 from ..services.fuzzy_confidence_service import recalc_confidence
+from ..services.artwork_service import list_artworks, add_artwork, set_primary_artwork, delete_artwork
+from ..services.relation_service import list_relations, add_relation, delete_relation
+from ..services.samples_service import list_samples, add_sample, delete_sample
 
 LIBRARY_DB = Path("library/db/library.sqlite").resolve()
 LIBRARY_AUDIO = Path("library/audio").resolve()
@@ -213,3 +216,81 @@ async def metadata_diff(track_id: int, temp_ref: Optional[str] = None):
     if temp_ref:
         candidates = fetch_candidates_by_temp_ref(temp_ref)
     return {"current": current, "attribution": attribution, "candidates": candidates}
+
+class ArtworkCreate(BaseModel):
+    cover_url: Optional[str] = None
+    source: str
+
+@router.get("/tracks/{track_id}/artworks")
+async def track_artworks(track_id: int):
+    return {"artworks": list_artworks(track_id)}
+
+@router.post("/tracks/{track_id}/artworks")
+async def track_artworks_add(track_id: int, body: ArtworkCreate):
+    try:
+        art = add_artwork(track_id, body.cover_url, body.source)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return {"artwork": art, "artworks": list_artworks(track_id)}
+
+@router.post("/tracks/{track_id}/artworks/{artwork_id}/primary")
+async def track_artworks_set_primary(track_id: int, artwork_id: int):
+    ok = set_primary_artwork(artwork_id, track_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Artwork not found")
+    return {"status": "primary_set", "artworks": list_artworks(track_id)}
+
+@router.delete("/tracks/{track_id}/artworks/{artwork_id}")
+async def track_artworks_delete(track_id: int, artwork_id: int):
+    ok = delete_artwork(artwork_id, track_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Artwork not found")
+    return {"status": "deleted", "artworks": list_artworks(track_id)}
+
+class RelationCreate(BaseModel):
+    related_track_id: int
+    relation_type: str  # remix | edit | alternate_version | sample_of | part_of_release
+
+@router.get("/tracks/{track_id}/relations")
+async def track_relations(track_id: int):
+    return {"relations": list_relations(track_id)}
+
+@router.post("/tracks/{track_id}/relations")
+async def track_relations_add(track_id: int, body: RelationCreate):
+    try:
+        rel = add_relation(track_id, body.related_track_id, body.relation_type)
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    return {"relation": rel, "relations": list_relations(track_id)}
+
+@router.delete("/tracks/{track_id}/relations/{relation_id}")
+async def track_relations_delete(track_id: int, relation_id: int):
+    ok = delete_relation(track_id, relation_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Relation not found")
+    return {"status": "deleted", "relations": list_relations(track_id)}
+
+class SampleCreate(BaseModel):
+    start_ms: int
+    end_ms: int
+    pad_index: int
+    path_audio: Optional[str] = None  # future: generated slice path
+
+@router.get("/tracks/{track_id}/samples")
+async def track_samples(track_id: int):
+    return {"samples": list_samples(track_id)}
+
+@router.post("/tracks/{track_id}/samples")
+async def track_samples_add(track_id: int, body: SampleCreate):
+    try:
+        sample = add_sample(track_id, body.start_ms, body.end_ms, body.pad_index, body.path_audio or "")
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    return {"sample": sample, "samples": list_samples(track_id)}
+
+@router.delete("/tracks/{track_id}/samples/{sample_id}")
+async def track_samples_delete(track_id: int, sample_id: int):
+    ok = delete_sample(track_id, sample_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Sample not found")
+    return {"status": "deleted", "samples": list_samples(track_id)}

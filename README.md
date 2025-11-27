@@ -105,6 +105,60 @@ $Bulk = @{ items = @(@{ candidate_id = 12; track_id = 5}, @{ candidate_id = 33; 
 Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Bulk -Uri http://127.0.0.1:8000/sources/metadata/apply/bulk
 ```
 
+### Multiple Artwork Variants
+Manage multiple covers per track (primary + alternates). Endpoints are under `/sources/tracks/{track_id}/artworks`.
+List artworks:
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:8000/sources/tracks/5/artworks
+```
+Add artwork (download if `cover_url` provided):
+```powershell
+$Art = @{ cover_url = "https://example.com/alt.jpg"; source = "discogs" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Art -Uri http://127.0.0.1:8000/sources/tracks/5/artworks
+```
+Set primary:
+```powershell
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/sources/tracks/5/artworks/12/primary
+```
+Delete artwork:
+```powershell
+Invoke-RestMethod -Method Delete -Uri http://127.0.0.1:8000/sources/tracks/5/artworks/12
+```
+
+### Track Relations (Remix / Edit / Versions / Samples / Releases)
+Link tracks with semantic relationships via `/sources/tracks/{track_id}/relations`.
+Add relation:
+```powershell
+$Rel = @{ related_track_id = 9; relation_type = "remix" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Rel -Uri http://127.0.0.1:8000/sources/tracks/5/relations
+```
+List relations:
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:8000/sources/tracks/5/relations
+```
+Delete relation:
+```powershell
+Invoke-RestMethod -Method Delete -Uri http://127.0.0.1:8000/sources/tracks/5/relations/14
+```
+Valid `relation_type` values: `remix`, `edit`, `alternate_version`, `sample_of`, `part_of_release`.
+
+### Samples (Performance Pads)
+Register time-ranged slices of a track (for DJ pad / sampler) via `/sources/tracks/{track_id}/samples`.
+Add sample:
+```powershell
+$Sample = @{ start_ms = 30500; end_ms = 34000; pad_index = 1 } | ConvertTo-Json
+Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Sample -Uri http://127.0.0.1:8000/sources/tracks/5/samples
+```
+List samples:
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:8000/sources/tracks/5/samples
+```
+Delete sample:
+```powershell
+Invoke-RestMethod -Method Delete -Uri http://127.0.0.1:8000/sources/tracks/5/samples/7
+```
+Future: waveform slicing & rendered audio stored in `path_audio`.
+
 After queueing downloads, run:
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\run-download-worker.ps1
