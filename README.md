@@ -1,6 +1,6 @@
 # UNCHAINED
 
-Post-modern audio management software.
+
 
 ![Status](https://img.shields.io/badge/status-alpha-orange) ![License](https://img.shields.io/badge/license-MIT-blue)
 
@@ -27,13 +27,14 @@ powershell -ExecutionPolicy Bypass -File scripts\import-demo.ps1 -FilePath "C:\\
 - **Library Storage**: `library/audio`, `library/covers`, `library/metadata`.
 - **Config**: `config/settings.json`, `.env`.
 
-Frontend (React + Tailwind + Tauri) scaffolding will be added next.
+Frontend is React + Tailwind + Tauri (desktop). See UI Architecture below.
 
 ## Dev Scripts
 - `scripts/setup-dev.ps1`: create venv, install backend dependencies
 - `scripts/run-backend.ps1`: start FastAPI at `http://127.0.0.1:8000`
 - `scripts/run-frontend.ps1`: start Vite at `http://localhost:5173`
 - `scripts/run-download-worker.ps1`: process queued download jobs
+ - `scripts/create-shortcuts.ps1`: create Windows Desktop & Start Menu shortcuts for the built Tauri app
 
 ## Environment Variables
 Backend (`config/.env`):
@@ -42,12 +43,15 @@ Backend (`config/.env`):
 
 Frontend (`frontend/.env` optional):
 - `VITE_API_BASE` (default `http://127.0.0.1:8000`)
+ - `VITE_ENABLE_NOTIFICATIONS` (optional; defaults to true)
 
 ## Screenshots (planned)
 - Library view
 - Track table
 - Analytics dashboard
 - DJ studio
+- Minimal Player
+- Vinyl Timeline
 
 ## Community & Contributions
 - Issues and PRs welcome
@@ -164,13 +168,53 @@ After queueing downloads, run:
 powershell -ExecutionPolicy Bypass -File scripts\run-download-worker.ps1
 ```
 
+## Desktop Integration
+- Notifications: enabled via Tauri allowlist. Frontend listens to backend SSE at `/sources/events/stream` and shows desktop notifications for `upload_complete` and `download_finished`.
+- System Tray: configured in `frontend/tauri.conf.json` with quick actions (Open Library, Import Folder, Exit). Handlers will be wired via Tauri’s Rust side next.
+- Shortcuts: `scripts/create-shortcuts.ps1` creates Desktop/Start Menu links to the built app.
+
+SSE endpoints:
+```http
+GET  /sources/events/stream        # text/event-stream
+POST /sources/events/emit          # { type, message, track_id? }
+```
+
+Frontend notifications bootstrap in `frontend/src/main.tsx` via `startNotifications()`.
+
+## UI Architecture (Canonical)
+Shared AppShell (TopBar, Sidebar, Main, BottomPlayer). DJ Studio overrides layout.
+
+Modes:
+- Spotify View (grid browsing)
+- iTunes Pro (table + inspector)
+- Vinyl Collector (timeline)
+- Minimal Player (fullscreen aesthetic)
+- Analytics (graphs)
+- DJ Studio (fullscreen workstation)
+
+Key files:
+- `frontend/src/layouts/AppShell.tsx` — master shell
+- `frontend/src/components/global/TopBar.tsx` — mode selector, global search, Import (MediaChoiceModal)
+- `frontend/src/components/global/Sidebar.tsx` — navigation
+- `frontend/src/components/global/BottomPlayer.tsx` — global player
+- `frontend/src/views/*` — per-mode views (stubs ready)
+- `frontend/src/store/useAppStore.ts` — Zustand global state
+- `frontend/src/services/notifications.ts` — SSE notifications
+
+Interaction rules:
+- Click open; double-click play; Space play/pause; Ctrl/Cmd+F search; drag files to import
+Accessibility & Responsiveness:
+- Keyboard navigation, high-contrast mode; desktop-first with responsive collapses
+
+See `UI_ARCHITECTURE.md` for the full specification.
+
 ## Project Vision
 UNCHAINED is a local-first, privacy-respecting music library and DJ studio designed to work offline, then scale to the web without rewrites. Core subsystems: Media Storage, Analysis Engine, Audio Playback & DJ Engine, FastAPI backend, React/Tauri frontend.
 
 ## Tech Stack
 - Backend: FastAPI, SQLite (later Postgres), Uvicorn, Pydantic, SQLAlchemy, Mutagen, Pillow
 - Analysis: Librosa (start), later Essentia; NumPy/SciPy
-- Frontend: React, Vite, Tailwind, Zustand, React Router
+- Frontend: React, Vite, Tailwind, Zustand, React Router, Tauri
 - Desktop: Tauri (Windows-first)
 
 ## Repository Layout
