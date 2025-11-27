@@ -1,0 +1,46 @@
+name: Pull Request Template
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your contribution to UNCHAINED!
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the change and motivation
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of Change
+      options:
+        - Feature
+        - Bug fix
+        - Docs update
+        - Refactor
+        - Chore
+    validations:
+      required: true
+  - type: textarea
+    id: testing
+    attributes:
+      label: How to Test
+      description: Steps and commands to verify
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Branch named appropriately
+        - label: Self-review done
+        - label: Tests added/updated (if applicable)
+        - label: Docs updated (README/ROADMAP/etc.)
+        - label: No unrelated changes
+  - type: input
+    id: issues
+    attributes:
+      label: Related Issues
+      description: Link issues (e.g., Closes #123)

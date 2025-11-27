@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/v2.0.0/tooling/cli/schema.json",
+  "productName": "UNCHAINED",
+  "version": "0.1.0",
+  "identifier": "com.pticalin.unchained",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "frontendDist": "dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "UNCHAINED",
+        "width": 1200,
+        "height": 800
+      }
+    ]
+  }
+}
