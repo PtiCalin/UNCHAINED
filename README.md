@@ -57,6 +57,53 @@ Frontend (`frontend/.env` optional):
 - Spotify: supported for metadata and playlists via `/sources/spotify/playlists/import`. Audio downloads from Spotify are not supported.
 - iTunes/Apple Music: import local iTunes library XML and copy referenced files via `/sources/itunes/library/import`.
 - Bandcamp: queue authorized download links you provide via `/sources/bandcamp/collection/import` or `/sources/downloads/queue`. Downloader will fetch HTTP URLs you own access to.
+ - MusicBrainz / Discogs: enrich metadata (search endpoints) before finalizing imports.
+ - SoundCloud: resolve public track/playlist metadata only.
+ - Local folder scan: bulk index/copy audio files for initial library population.
+
+### Metadata Quality Aggregation
+Use `/sources/metadata/quality` with artist/album/title to fetch multi-source candidates (MusicBrainz + Discogs), scored by field completeness. Optionally pass `path_audio` to persist candidates for later review.
+Example:
+```powershell
+$Body = @{ artist = "Boards of Canada"; album = "Music Has the Right"; title = "Roygbiv"; path_audio = "library/audio/roygbiv.flac" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Body -Uri http://127.0.0.1:8000/sources/metadata/quality
+```
+
+### Apply Candidate Metadata
+Promote a chosen candidate into a track (fill missing fields & fetch cover):
+```powershell
+$Apply = @{ candidate_id = 12; track_id = 5 } | ConvertTo-Json
+Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Apply -Uri http://127.0.0.1:8000/sources/metadata/apply
+```
+Returned track includes updated `title`, `artist`, `album`, `year`, `duration_ms`, and `path_cover` if downloaded.
+
+### Provenance & Attribution
+Each applied field stores its origin in `metadata_attribution` with source, candidate id, confidence score, and timestamp.
+Retrieve attribution for a track:
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:8000/sources/metadata/attribution/5
+```
+Response lists `field_name`, `value`, `source`, and `confidence` for auditing and future reversion logic.
+
+### Reversion & Diff
+Revert latest applied field:
+```powershell
+$Revert = @{ track_id = 5; field_name = "album" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Revert -Uri http://127.0.0.1:8000/sources/metadata/revert
+```
+Recalculate fuzzy confidence (using RapidFuzz) for current attribution set:
+```powershell
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/sources/metadata/recalc-confidence/5
+```
+Fetch diff (current track + attribution + optional candidates):
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:8000/sources/metadata/diff/5
+```
+Bulk apply multiple candidates:
+```powershell
+$Bulk = @{ items = @(@{ candidate_id = 12; track_id = 5}, @{ candidate_id = 33; track_id = 7}) } | ConvertTo-Json
+Invoke-RestMethod -Method Post -ContentType "application/json" -Body $Bulk -Uri http://127.0.0.1:8000/sources/metadata/apply/bulk
+```
 
 After queueing downloads, run:
 ```powershell

@@ -12,6 +12,9 @@ from ..services.musicbrainz_service import search_musicbrainz_release
 from ..services.discogs_service import search_discogs_release
 from ..services.soundcloud_service import resolve_soundcloud_tracks
 from ..services.local_scan_service import scan_local_folder
+from ..services.metadata_quality_service import aggregate_metadata, persist_candidates, derive_temp_ref, choose_best, apply_candidate, fetch_candidates_by_temp_ref
+from ..services.metadata_provenance_service import get_attribution, revert_field
+from ..services.fuzzy_confidence_service import recalc_confidence
 
 LIBRARY_DB = Path("library/db/library.sqlite").resolve()
 LIBRARY_AUDIO = Path("library/audio").resolve()
@@ -116,3 +119,97 @@ class LocalScanRequest(BaseModel):
 async def local_scan(body: LocalScanRequest):
     count = scan_local_folder(Path(body.folder), LIBRARY_AUDIO, copy=body.copy)
     return {"indexed": count}
+
+class MetadataQualityRequest(BaseModel):
+    artist: Optional[str] = None
+    album: Optional[str] = None
+    title: Optional[str] = None
+    discogs_token: Optional[str] = None
+    path_audio: Optional[str] = None  # local path to associate candidates
+
+@router.post("/metadata/quality")
+async def metadata_quality(body: MetadataQualityRequest):
+    candidates = aggregate_metadata(body.artist, body.album, body.title, discogs_token=body.discogs_token)
+    temp_ref = None
+    if body.path_audio:
+        temp_ref = derive_temp_ref(body.path_audio)
+        persist_candidates(temp_ref, candidates)
+        # replace candidates with persisted (including IDs)
+        candidates = fetch_candidates_by_temp_ref(temp_ref)
+    best = choose_best(candidates)
+    return {"temp_ref": temp_ref, "best": best, "candidates": candidates}
+
+class MetadataApplyRequest(BaseModel):
+    candidate_id: int
+    track_id: int
+
+@router.post("/metadata/apply")
+async def metadata_apply(body: MetadataApplyRequest):
+    row = apply_candidate(body.candidate_id, body.track_id)
+    if not row:
+        raise HTTPException(status_code=404, detail="Candidate or Track not found")
+    return {
+        "track": {
+            "id": row[0],
+            "title": row[1],
+            "artist": row[2],
+            "album": row[3],
+            "year": row[4],
+            "duration_ms": row[5],
+            "path_cover": row[6]
+        }
+    }
+
+@router.get("/metadata/attribution/{track_id}")
+async def metadata_attribution(track_id: int):
+    return {"attribution": get_attribution(track_id)}
+
+class MetadataRevertRequest(BaseModel):
+    track_id: int
+    field_name: str
+
+@router.post("/metadata/revert")
+async def metadata_revert(body: MetadataRevertRequest):
+    ok = revert_field(body.track_id, body.field_name)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Nothing to revert")
+    return {"status": "reverted", "attribution": get_attribution(body.track_id)}
+
+@router.post("/metadata/recalc-confidence/{track_id}")
+async def metadata_recalc_confidence(track_id: int):
+    ok = recalc_confidence(track_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Track not found")
+    return {"status": "recalculated", "attribution": get_attribution(track_id)}
+
+class BulkApplyItem(BaseModel):
+    candidate_id: int
+    track_id: int
+
+class BulkApplyRequest(BaseModel):
+    items: List[BulkApplyItem]
+
+@router.post("/metadata/apply/bulk")
+async def metadata_apply_bulk(body: BulkApplyRequest):
+    applied = []
+    for item in body.items:
+        row = apply_candidate(item.candidate_id, item.track_id)
+        if row:
+            applied.append({"track_id": item.track_id, "candidate_id": item.candidate_id})
+    return {"applied": applied}
+
+@router.get("/metadata/diff/{track_id}")
+async def metadata_diff(track_id: int, temp_ref: Optional[str] = None):
+    # Current track
+    db = get_db(LIBRARY_DB)
+    t = db.execute("SELECT id, title, artist, album, year, duration_ms, path_cover FROM tracks WHERE id=?", (track_id,)).fetchone()
+    if not t:
+        raise HTTPException(status_code=404, detail="Track not found")
+    current = {
+        "id": t[0], "title": t[1], "artist": t[2], "album": t[3], "year": t[4], "duration_ms": t[5], "path_cover": t[6]
+    }
+    attribution = get_attribution(track_id)
+    candidates = []
+    if temp_ref:
+        candidates = fetch_candidates_by_temp_ref(temp_ref)
+    return {"current": current, "attribution": attribution, "candidates": candidates}

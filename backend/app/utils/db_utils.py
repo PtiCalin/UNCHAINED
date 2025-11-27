@@ -39,7 +39,8 @@ def init_db(db_path: Path):
             url_audio TEXT,
             url_cover TEXT,
             status TEXT,
-            mapped_track_id INTEGER
+            mapped_track_id INTEGER,
+            confidence REAL
         )
         """
     )
@@ -55,6 +56,57 @@ def init_db(db_path: Path):
             created_at TEXT,
             started_at TEXT,
             finished_at TEXT
+        )
+        """
+    )
+    # Metadata candidates aggregated from multi-source queries before finalizing import
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS metadata_candidates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            temp_track_ref TEXT, -- arbitrary key (e.g., local filename hash) to group candidates
+            source TEXT,
+            title TEXT,
+            artist TEXT,
+            album TEXT,
+            year TEXT,
+            length_ms INTEGER,
+            cover_url TEXT,
+            score REAL,
+            created_at TEXT
+        )
+        """
+    )
+    # External metadata cache with TTL (epoch seconds)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS external_cache (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cache_key TEXT UNIQUE,
+            source TEXT,
+            payload TEXT,
+            created_at INTEGER
+        )
+        """
+    )
+    # Attempt to add applied column if missing (best-effort)
+    try:
+        c.execute("ALTER TABLE metadata_candidates ADD COLUMN applied INTEGER DEFAULT 0")
+    except Exception:
+        pass
+    # Field-level provenance for applied metadata
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS metadata_attribution (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            field_name TEXT,
+            value TEXT,
+            source TEXT,
+            candidate_id INTEGER,
+            confidence REAL,
+            applied_at TEXT,
+            reverted INTEGER DEFAULT 0
         )
         """
     )

@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { Link, Routes, Route } from 'react-router-dom'
 import TrackList from './components/TrackList'
+import MetadataTool from './components/MetadataTool'
+import MetadataDiff from './components/MetadataDiff'
 
 export default function App() {
   useEffect(() => {
@@ -12,11 +14,14 @@ export default function App() {
         <h1 className="text-xl font-semibold">UNCHAINED</h1>
         <nav className="flex gap-3 text-sm">
           <Link to="/" className="hover:underline">Library</Link>
+          <Link to="/metadata" className="hover:underline">Metadata</Link>
         </nav>
       </header>
       <main className="p-4">
         <Routes>
           <Route path="/" element={<TrackList />} />
+          <Route path="/metadata" element={<MetadataTool />} />
+          <Route path="/metadata/diff/:trackId" element={<MetadataDiff />} />
         </Routes>
       </main>
     </div>
