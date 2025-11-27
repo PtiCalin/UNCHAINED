@@ -1,0 +1,6 @@
+{
+  "library_path": "library/audio",
+  "covers_path": "library/covers",
+  "metadata_path": "library/metadata",
+  "db_path": "library/db/library.sqlite"
+}
