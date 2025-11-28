@@ -15,6 +15,13 @@ export async function fetchTracks(): Promise<Track[]> {
   return res.json()
 }
 
+export async function searchTracks(q: string, limit = 10): Promise<Track[]> {
+  const url = `${API_BASE}/tracks/search?q=${encodeURIComponent(q)}&limit=${limit}`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('Failed to search tracks')
+  return res.json()
+}
+
 export type MetadataCandidate = {
   source: string
   title?: string

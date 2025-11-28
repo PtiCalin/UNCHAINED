@@ -8,6 +8,22 @@ import { startNotifications } from './services/notifications'
 const API_BASE = (import.meta as any).env?.VITE_API_BASE || 'http://127.0.0.1:8000'
 startNotifications(API_BASE)
 
+// Tauri tray actions: navigate and trigger import modal
+try {
+  // @ts-ignore
+  if ((window as any).__TAURI__) {
+    import('@tauri-apps/api/event').then(({ listen }) => {
+      listen('tray://open-library', () => {
+        history.pushState({}, '', '/pro')
+        window.dispatchEvent(new PopStateEvent('popstate'))
+      })
+      listen('tray://import-folder', () => {
+        window.dispatchEvent(new CustomEvent('tray-import-folder'))
+      })
+    }).catch(() => {})
+  }
+} catch {}
+
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>

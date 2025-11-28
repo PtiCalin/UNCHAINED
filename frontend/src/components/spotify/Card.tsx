@@ -24,14 +24,14 @@ export const Card: React.FC<Props> = ({ title, subtitle, cover, loading, trackId
   }
   return (
     <div className="w-40 cursor-pointer" onClick={onClick}>
-      <div className="group relative w-40 h-40 bg-[#181818] rounded-lg shadow-md overflow-hidden">
+      <div className="group relative w-40 h-40 neo-card overflow-hidden transition-transform duration-150 hover:scale-[1.02]">
         {cover ? (
           <img src={cover} alt={title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full" />
         )}
         <button
-          className="absolute right-2 bottom-2 opacity-0 group-hover:opacity-100 transition-opacity px-3 py-2 rounded-full bg-[#1db954] text-black text-xs"
+          className="absolute right-2 bottom-2 opacity-0 group-hover:opacity-100 transition-opacity px-3 py-2 rounded-full accent-bg text-xs shadow-accent"
           onClick={(e) => { e.stopPropagation(); onPlay ? onPlay() : (trackId ? playStore(trackId) : null) }}
           aria-label="Play"
         >

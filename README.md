@@ -170,7 +170,7 @@ powershell -ExecutionPolicy Bypass -File scripts\run-download-worker.ps1
 
 ## Desktop Integration
 - Notifications: enabled via Tauri allowlist. Frontend listens to backend SSE at `/sources/events/stream` and shows desktop notifications for `upload_complete` and `download_finished`.
-- System Tray: configured in `frontend/tauri.conf.json` with quick actions (Open Library, Import Folder, Exit). Handlers will be wired via Tauri’s Rust side next.
+- System Tray: implemented in `frontend/src-tauri/src/main.rs` with quick actions (Open Library, Import Folder, Exit). Events are emitted to the frontend as `tray://open-library` and `tray://import-folder`.
 - Shortcuts: `scripts/create-shortcuts.ps1` creates Desktop/Start Menu links to the built app.
 
 SSE endpoints:
@@ -181,16 +181,30 @@ POST /sources/events/emit          # { type, message, track_id? }
 
 Frontend notifications bootstrap in `frontend/src/main.tsx` via `startNotifications()`.
 
+Tray actions wiring in `frontend/src/main.tsx`:
+- `tray://open-library`: navigates to `/pro` (Library)
+- `tray://import-folder`: emits `window` event `tray-import-folder` (UI can open Import modal)
+
+### Track Search API
+Search tracks by title/artist/album with pagination:
+```http
+GET /tracks/search?q=term&limit=20&offset=0
+```
+Example (PowerShell):
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/tracks/search?q=boards&limit=10"
+```
+
 ## UI Architecture (Canonical)
 Shared AppShell (TopBar, Sidebar, Main, BottomPlayer). DJ Studio overrides layout.
 
 Modes:
-- Spotify View (grid browsing)
-- iTunes Pro (table + inspector)
-- Vinyl Collector (timeline)
-- Minimal Player (fullscreen aesthetic)
-- Analytics (graphs)
-- DJ Studio (fullscreen workstation)
+- Player (grid browsing)
+- Library (table + inspector)
+- Collection (timeline)
+- Focus (fullscreen aesthetic)
+- Dashboard (graphs)
+- Studio (fullscreen workstation)
 
 Key files:
 - `frontend/src/layouts/AppShell.tsx` — master shell

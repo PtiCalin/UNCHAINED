@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi import Query
 from fastapi import UploadFile, File
 from fastapi import BackgroundTasks
 from typing import List
@@ -24,6 +25,28 @@ init_db(LIBRARY_DB)
 def list_tracks() -> List[Track]:
     db = get_db(LIBRARY_DB)
     rows = db.execute("SELECT id, title, artist, album, duration_ms, path_audio FROM tracks ORDER BY import_date DESC").fetchall()
+    return [Track(
+        id=row[0], title=row[1], artist=row[2], album=row[3], duration_ms=row[4], path_audio=row[5]
+    ) for row in rows]
+
+@router.get("/search")
+def search_tracks(q: str = Query("", min_length=1), limit: int = 20, offset: int = 0) -> List[Track]:
+    term = q.strip()
+    if not term:
+        return []
+    db = get_db(LIBRARY_DB)
+    # Escape LIKE wildcards
+    esc = term.replace("%", r"\%").replace("_", r"\_")
+    like = f"%{esc}%"
+    rows = db.execute(
+        (
+            "SELECT id, title, artist, album, duration_ms, path_audio "
+            "FROM tracks "
+            "WHERE title LIKE ? ESCAPE '\\' OR artist LIKE ? ESCAPE '\\' OR album LIKE ? ESCAPE '\\' "
+            "ORDER BY import_date DESC LIMIT ? OFFSET ?"
+        ),
+        (like, like, like, limit, offset),
+    ).fetchall()
     return [Track(
         id=row[0], title=row[1], artist=row[2], album=row[3], duration_ms=row[4], path_audio=row[5]
     ) for row in rows]

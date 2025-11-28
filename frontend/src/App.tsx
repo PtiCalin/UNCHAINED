@@ -1,14 +1,14 @@
 import { Routes, Route } from 'react-router-dom'
 import MetadataDiff from './components/MetadataDiff'
 import { AppShell } from './layouts/AppShell'
-import SpotifyHome from './views/spotify/Home'
-import ArtistPage from './views/spotify/Artist'
-import AlbumPage from './views/spotify/Album'
-import ITunesPro from './views/itunesPro/Index'
-import VinylTimeline from './views/vinylCollector/Timeline'
-import MinimalPlayer from './views/minimalPlayer/Index'
-import AnalyticsIndex from './views/analytics/Index'
-import DJStudio from './views/djStudio/Studio'
+import SpotifyHome from './views/Player/Home'
+import ArtistPage from './views/Player/Artist'
+import AlbumPage from './views/Player/Album'
+import ITunesPro from './views/Library/Index'
+import VinylTimeline from './views/Collection/Timeline'
+import MinimalPlayer from './views/Focus/Index'
+import AnalyticsIndex from './views/Dashboard/Index'
+import DJStudio from './views/Studio/Studio'
 
 export default function App() {
   return (

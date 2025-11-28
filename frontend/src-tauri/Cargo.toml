@@ -1,0 +1,10 @@
+[package]
+name = "unchained-tauri"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+anyhow = "1"
+
+[build-dependencies]

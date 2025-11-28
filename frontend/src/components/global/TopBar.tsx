@@ -4,12 +4,12 @@ import { useAppStore, ViewMode } from '../../store/useAppStore'
 import { MediaChoiceModal } from '../MediaChoiceModal'
 
 const modes: { label: string; value: ViewMode; path: string }[] = [
-  { label: 'Spotify View', value: 'spotify', path: '/' },
-  { label: 'iTunes Pro', value: 'itunesPro', path: '/pro' },
-  { label: 'Vinyl Collector', value: 'vinylCollector', path: '/vinyl' },
-  { label: 'Minimal Player', value: 'minimal', path: '/minimal' },
-  { label: 'Analytics', value: 'analytics', path: '/analytics' },
-  { label: 'DJ Studio', value: 'studio', path: '/studio' },
+  { label: 'Player', value: 'spotify', path: '/' },
+  { label: 'Library', value: 'itunesPro', path: '/pro' },
+  { label: 'Collection', value: 'vinylCollector', path: '/vinyl' },
+  { label: 'Focus', value: 'minimal', path: '/minimal' },
+  { label: 'Dashboard', value: 'analytics', path: '/analytics' },
+  { label: 'Studio', value: 'studio', path: '/studio' },
 ]
 
 export const TopBar: React.FC = () => {
@@ -30,12 +30,12 @@ export const TopBar: React.FC = () => {
     if (choice === 'bandcamp') navigate('/pro')
   }
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b border-[#222] bg-[#181818]">
+    <header className="flex items-center justify-between px-4 py-3 neo-border glass-panel">
       <div className="flex items-center gap-3">
-        <button className="px-2 py-1 rounded bg-[#2a2a2a]" onClick={toggleSidebar}>☰</button>
-        <div className="font-semibold">UNCHAINED</div>
+        <button className="btn-brutal focus-accent" onClick={toggleSidebar}>☰</button>
+        <div className="font-semibold tracking-wide">UNCHAINED</div>
         <select
-          className="bg-[#2a2a2a] text-white rounded px-2 py-1"
+          className="btn-brutal focus-accent"
           value={current}
           onChange={(e) => onChangeMode(e.target.value as ViewMode)}
         >
@@ -48,9 +48,9 @@ export const TopBar: React.FC = () => {
         <GlobalSearch />
       </div>
       <div className="flex items-center gap-2 text-sm">
-        <button className="px-2 py-1 bg-[#2a2a2a] rounded" onClick={() => setImportOpen(true)}>Import</button>
-        <button className="px-2 py-1 bg-[#2a2a2a] rounded">Theme</button>
-        <button className="px-2 py-1 bg-[#2a2a2a] rounded">Settings</button>
+        <button className="btn-primary shadow-accent focus-accent" onClick={() => setImportOpen(true)}>Import</button>
+        <button className="btn-brutal focus-accent">Theme</button>
+        <button className="btn-brutal focus-accent">Settings</button>
       </div>
       <MediaChoiceModal open={importOpen} onClose={() => setImportOpen(false)} onChoose={onChooseMedia} />
     </header>

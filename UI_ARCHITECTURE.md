@@ -14,15 +14,15 @@ This document defines the canonical UI plan for UNCHAINED.
 - `BottomPlayer`: global player
 
 ## Modes & Views
-- Spotify View: grid browsing; Home, Artist, Album
-- iTunes Pro: table + right inspector; virtualized columns, editable metadata
-- Vinyl Collector: horizontal release timeline; artwork cards and fold-out details
-- Minimal Player: fullscreen aesthetic player
-- Analytics: graphs (BPM, Key Wheel, Mood Map, Genre Clusters, PCA, Artist Graph, Timeline Heatmap)
-- DJ Studio: full override; Decks A/B, Mixer, Pad Grid, Recorder
+- Player (formerly Spotify View): grid browsing; Home, Artist, Album
+- Library (formerly iTunes Pro): table + right inspector; virtualized columns, editable metadata
+- Collection (formerly Vinyl Collector): horizontal release timeline; artwork cards and fold-out details
+- Focus (formerly Minimal Player): fullscreen aesthetic player
+- Dashboard (formerly Analytics): graphs (BPM, Key Wheel, Mood Map, Genre Clusters, PCA, Artist Graph, Timeline Heatmap)
+- Studio (formerly DJ Studio): full override; Decks A/B, Mixer, Pad Grid, Recorder
 
 ## Navigation
-- Routes: `/` (Spotify Home), `/pro`, `/vinyl`, `/minimal`, `/analytics`, `/studio`
+- Routes: `/` (Player Home), `/pro` (Library), `/vinyl` (Collection), `/minimal` (Focus), `/analytics` (Dashboard), `/studio` (Studio)
 - Mode selector updates route + global `currentView`
 
 ## State Management
@@ -48,8 +48,9 @@ This document defines the canonical UI plan for UNCHAINED.
 - `services/notifications.ts` — SSE-based desktop notifications
 
 ## Desktop Integration
-- Tauri config (`frontend/tauri.conf.json`) allowlist notifications; system tray menu
-- System tray handlers to be implemented in `src-tauri` (Open Library, Import Folder, Exit)
+- Tauri config (`frontend/src-tauri/tauri.conf.json`) allowlist notifications; system tray menu
+- System tray handlers implemented in `frontend/src-tauri/src/main.rs` with menu items: Open Library, Import Folder, Exit
+- Frontend listens for Tauri tray events in `frontend/src/main.tsx` and navigates accordingly
 
 ## Roadmap (UI)
 1. M1: AppShell + Spotify-like Home cards/rows, global search

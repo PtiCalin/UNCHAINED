@@ -3,4 +3,81 @@
 @tailwind utilities;
 
 html, body, #root { height: 100%; }
-body { @apply bg-neutral-900 text-neutral-100; }
+body { @apply text-neutral-100; }
+
+/* Design tokens */
+:root {
+	--ui-bg: #0f0f10;
+	--panel-bg: rgba(24, 24, 28, 0.7);
+	--panel-border: #27272a;
+	--panel-border-strong: #3f3f46;
+	--text-primary: #ffffff;
+	--text-secondary: #b3b3b3;
+	--accent: #c17cff; /* PtiCalin Purple */
+	--accent-strong: #ad62ff;
+	--shadow-accent: 0 8px 24px rgba(193, 124, 255, 0.25);
+	--radius: 12px;
+	--radius-sm: 8px;
+	--blur: 10px;
+}
+
+/* Background: subtle grid and vignette */
+body {
+	background-color: var(--ui-bg);
+	background-image:
+		radial-gradient(transparent 1px, var(--ui-bg) 1px),
+		radial-gradient(transparent 1px, var(--ui-bg) 1px),
+		radial-gradient(1200px 700px at 80% -20%, rgba(193,124,255,0.08), transparent),
+		radial-gradient(1000px 600px at -10% 110%, rgba(80,80,120,0.08), transparent);
+	background-size: 14px 14px, 14px 14px, auto, auto;
+	background-position: 0 0, 7px 7px, center, center;
+}
+
+/* Utilities */
+.glass-panel {
+	background: var(--panel-bg);
+	backdrop-filter: blur(var(--blur));
+	-webkit-backdrop-filter: blur(var(--blur));
+}
+.neo-border { border: 2px solid var(--panel-border); }
+.neo-border-strong { border: 2px solid var(--panel-border-strong); }
+.accent { color: var(--accent); }
+.accent-bg { background: var(--accent); color: #0b0b0c; }
+.accent-ring { box-shadow: 0 0 0 2px rgba(193,124,255,0.35); }
+.shadow-accent { box-shadow: var(--shadow-accent); }
+
+.focus-accent:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(193,124,255,0.45), 0 8px 24px rgba(193,124,255,0.25);
+	border-color: var(--accent-strong) !important;
+}
+
+.btn-brutal {
+	border: 2px solid var(--panel-border-strong);
+	background: #1a1a1f;
+	border-radius: 10px;
+	padding: 6px 10px;
+}
+.btn-brutal:hover { background: #202028; }
+.btn-primary {
+	border: 2px solid var(--accent-strong);
+	background: var(--accent);
+	color: #0b0b0c;
+	border-radius: 999px;
+	padding: 6px 12px;
+}
+
+.neo-card {
+	border: 2px solid var(--panel-border);
+	background: linear-gradient(180deg, rgba(32,32,38,0.9), rgba(22,22,26,0.9));
+	border-radius: var(--radius);
+}
+.neo-card:hover { border-color: var(--panel-border-strong); }
+
+.mono-tag {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: 11px;
+	border: 2px solid var(--panel-border-strong);
+	border-radius: 8px;
+	padding: 2px 6px;
+}
