@@ -22,8 +22,14 @@ powershell -ExecutionPolicy Bypass -File scripts\run-frontend.ps1
 ```
 
 ## Branching & Commits
-- Branch naming: `feat/<area>-<short-desc>`, `fix/<area>-<short-desc>`, `docs/<topic>`
-- Commits: concise, imperative present (e.g., "Add track import endpoint")
+- Branch naming: `feat/<area>`, `fix/<area>`, `docs/<topic>`, `chore/<scope>`, `refactor/<scope>`
+- Conventional Commits strongly encouraged:
+	- `feat(metadata): add discogs token param`
+	- `fix(scan): handle unicode paths`
+	- `docs(readme): add feature matrix`
+	- `chore(deps): bump fastapi`
+	- `refactor(ui): extract toast host`
+- Keep commits atomic; prefer smaller PRs.
 
 ## Code Style
 - Backend: Pydantic models, FastAPI routers under `backend/app/api`, services under `backend/app/services`
@@ -31,17 +37,29 @@ powershell -ExecutionPolicy Bypass -File scripts\run-frontend.ps1
 - Avoid unrelated reformatting; keep PRs focused
 
 ## Testing
-- Prefer unit tests close to files changed
-- For backend, use `pytest` (add later in Phase 2-3)
+- Unit tests (Python `pytest`) will appear Phase 2; for now manual verification.
+- Avoid blocking large feature PRs waiting on future test harness.
 
 ## Pull Requests
-- Describe the change and motivation
-- Include testing notes and screenshots if UI
-- Link related issues
+- Describe motivation & scope; reference issue number.
+- Include screenshots (UI) or sample API calls.
+- Update `CHANGELOG.md` (Unreleased section) when user-facing changes occur.
+- Use Draft PRs for early feedback.
 
 ## Issue Reporting
 - Provide reproduction steps, logs, and environment details
 
 ## Security & Privacy
-- No telemetry or tracking by default
-- Handle local file paths securely; avoid leaking user data
+- No telemetry/tracking.
+- Do not commit secrets.
+- Validate any new external service integrations for rate limits & auth.
+
+## Release Process
+1. Update CHANGELOG (move Unreleased entries under version).
+2. Bump version in `tauri.conf.json` and `src-tauri/Cargo.toml`.
+3. Build installer: `npx tauri build`.
+4. Generate & sign update manifest; publish to endpoint.
+5. Create GitHub Release using `.github/RELEASE_TEMPLATE.md`.
+
+## DCO / Sign-Off (Optional Future)
+If DCO enforced later: append `Signed-off-by: Name <email>` to commit messages.

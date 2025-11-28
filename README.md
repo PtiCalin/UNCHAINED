@@ -1,10 +1,48 @@
 # UNCHAINED
 
+![Status](https://img.shields.io/badge/status-alpha-orange) ![License](https://img.shields.io/badge/license-MIT-blue) ![Platform](https://img.shields.io/badge/platform-Windows%2011-0078D4) ![FastAPI](https://img.shields.io/badge/backend-FastAPI-009688) ![React](https://img.shields.io/badge/frontend-React-61DAFB) ![Tauri](https://img.shields.io/badge/desktop-Tauri-FB8C00)
+
+> Local‑first music library, metadata quality engine, multi‑artwork manager, provenance audit trail, and evolving DJ workstation — offline first, cloud ready.
+
+## TL;DR
+```
+git clone https://github.com/PtiCalin/UNCHAINED.git
+cd UNCHAINED
+powershell -ExecutionPolicy Bypass -File scripts\setup-dev.ps1
+powershell -ExecutionPolicy Bypass -File scripts\run-backend.ps1   # API :8000
+cd frontend; npm install; npm run dev                              # UI  :5173
+```
+Optional desktop build:
+```
+cd frontend
+npx tauri build   # Produces Windows installer (NSIS)
+```
+
+## Feature Matrix (Early Alpha)
+| Area | Implemented | Planned |
+|------|-------------|--------|
+| Track Import (manual upload) | ✅ | Batch drag/drop |
+| Local Folder Scan | ✅ | Incremental watch |
+| iTunes XML Import | ✅ | Smart diff merges |
+| Spotify Playlist Metadata | ✅ | OAuth flow refinement |
+| Bandcamp Links Queue | ✅ | Auto cover extraction |
+| Metadata Aggregation (MusicBrainz/Discogs) | ✅ | AcousticBrainz, niche DBs |
+| Candidate Scoring & Apply | ✅ | ML weighted scoring |
+| Field-Level Provenance & Revert | ✅ | Multi-step undo stack |
+| Multi Artwork Variants | ✅ | Inline cropping & palette |
+| Track Relations (remix/edit/version/sample/release) | ✅ | Graph visualization |
+| Samples (pad slices) | ✅ | Waveform slice render |
+| Global Search (local + backend) | ✅ | Full-text / fuzzy index |
+| SSE Desktop Notifications | ✅ | Rich action buttons |
+| System Tray Actions | ✅ | Dynamic progress + badges |
+| Updater (pilot) | ✅ | Delta updates, signing finalized |
+| DJ Studio (layout scaffold) | 🟨 | Beat sync, mixer DSP |
+| Analytics Dashboard | 🟨 | Embeddings, clustering |
+| Audio Analysis (BPM/Key) | ⬜ | Phase 2 start |
+| Cloud Sync | ⬜ | Postgres + object storage |
 
 
-![Status](https://img.shields.io/badge/status-alpha-orange) ![License](https://img.shields.io/badge/license-MIT-blue)
-
-## Quick Start (Phase 1)
+## Quick Start (Dev)
 
 ### Backend
 1. Setup Python env and deps:
@@ -17,7 +55,7 @@ powershell -ExecutionPolicy Bypass -File scripts\run-backend.ps1
 ```
 3. Health check: open `http://127.0.0.1:8000/health`
 
-### Import a Track (demo)
+### Import a Track (Demo)
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\import-demo.ps1 -FilePath "C:\\path\\to\\song.mp3"
 ```
@@ -27,7 +65,30 @@ powershell -ExecutionPolicy Bypass -File scripts\import-demo.ps1 -FilePath "C:\\
 - **Library Storage**: `library/audio`, `library/covers`, `library/metadata`.
 - **Config**: `config/settings.json`, `.env`.
 
-Frontend is React + Tailwind + Tauri (desktop). See UI Architecture below.
+Frontend is React + Tailwind + Tauri (desktop). See `ARCHITECTURE.md` and `UI_ARCHITECTURE.md`.
+
+### High-Level Diagram (ASCII)
+```
+┌──────────────┐      SSE (events)      ┌──────────────────┐
+│  FastAPI     │ ─────────────────────► │  React/Tauri UI  │
+│  Routers     │ ◄───── REST / JSON ─── │  AppShell        │
+│ /tracks      │                        │  Global Search   │
+│ /sources/... │ ────► SQLite           │  Toasts/Tray     │
+└─────┬────────┘        ▲              └─────────┬────────┘
+	  │                 │                        │
+  Metadata Services  Library DB            System Tray & Updater
+	  │                 │                        │
+  External APIs (MB, Discogs, Spotify, SC, Bandcamp)       
+```
+
+### Data Provenance Flow
+1. Import / scan produces raw track rows.
+2. `/sources/metadata/quality` aggregates candidate rows from external services.
+3. User applies candidate ⇒ fields updated + attribution stored per field.
+4. Reversion recalculates confidence; diff endpoint compares current vs candidates.
+
+### Desktop Integration
+System tray emits events → UI listens and triggers navigation or modals. Updater pilot checks remote manifest; toast host surfaces statuses.
 
 ## Dev Scripts
 - `scripts/setup-dev.ps1`: create venv, install backend dependencies
@@ -45,7 +106,7 @@ Frontend (`frontend/.env` optional):
 - `VITE_API_BASE` (default `http://127.0.0.1:8000`)
  - `VITE_ENABLE_NOTIFICATIONS` (optional; defaults to true)
 
-## Screenshots (planned)
+## Screenshots (Placeholders)
 - Library view
 - Track table
 - Analytics dashboard
@@ -57,7 +118,7 @@ Frontend (`frontend/.env` optional):
 - Issues and PRs welcome
 - PR template: see `.github/PULL_REQUEST_TEMPLATE.md`
 
-## Source Imports (Legal)
+## Source Imports & Legal Notes
 - Spotify: supported for metadata and playlists via `/sources/spotify/playlists/import`. Audio downloads from Spotify are not supported.
 - iTunes/Apple Music: import local iTunes library XML and copy referenced files via `/sources/itunes/library/import`.
 - Bandcamp: queue authorized download links you provide via `/sources/bandcamp/collection/import` or `/sources/downloads/queue`. Downloader will fetch HTTP URLs you own access to.
@@ -168,7 +229,7 @@ After queueing downloads, run:
 powershell -ExecutionPolicy Bypass -File scripts\run-download-worker.ps1
 ```
 
-## Desktop Integration
+## Desktop Integration & Updater
 - Notifications: enabled via Tauri allowlist. Frontend listens to backend SSE at `/sources/events/stream` and shows desktop notifications for `upload_complete` and `download_finished`.
 - System Tray: implemented in `frontend/src-tauri/src/main.rs` with quick actions (Open Library, Import Folder, Exit). Events are emitted to the frontend as `tray://open-library` and `tray://import-folder`.
 ### Toast & Update Status
@@ -248,12 +309,42 @@ config/         # .env, settings.json
 scripts/        # Dev helpers and runners
 ```
 
-## Roadmap
+## Roadmap Snapshot
 See `ROADMAP.md` for phases: Foundation → Analysis → UI Modes → Data Science → DJ Engine → Mixing Suite → Web Deployment.
 
-## Contributing
+## Contributing & Standards
+See `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` and `SECURITY.md`.
+
+Commit convention: Conventional Commits (e.g., `feat(metadata): add discogs token param`).
+Branch naming: `feat/<area>`, `fix/<area>`, `docs/<topic>`, `chore/<scope>`.
+Release process: update `CHANGELOG.md`, bump `version` in `tauri.conf.json` & `Cargo.toml`, draft notes from `.github/RELEASE_TEMPLATE.md`.
+
+### Development Philosophy
+Minimal surface changes, strong provenance, gradual enhancement over rewrites.
+
+### Privacy
+All processing is local; no analytics/telemetry. External lookups only when explicitly invoked by the user.
+
+### Disclaimer
+You are responsible for ensuring you have rights to any audio you import, scan or download.
 We welcome issues and PRs. Please read `CONTRIBUTING.md` for environment setup, coding style, branch naming, and PR checklist.
 
 ## License
-This project is licensed under the MIT License. See `LICENSE`.
+MIT — see `LICENSE`.
+
+## FAQ (Early)
+Q: Does UNCHAINED download Spotify audio?  
+A: No. Spotify integration is metadata + playlists only.
+
+Q: Can I run on macOS/Linux?  
+A: Core backend/frontend yes; Windows-first desktop packaging. Tauri cross-platform will be validated later.
+
+Q: Will analysis slow large imports?  
+A: Analysis batch jobs are deferred; initial ingestion remains fast while analysis runs asynchronously in future phases.
+
+Q: How are updates verified?  
+A: Manifest signature (Ed25519) — placeholder until signing keys are published.
+
+---
+For questions or ideas open a GitHub Issue or start a Discussion (coming soon).
 
