@@ -20,6 +20,10 @@ try {
       listen('tray://import-folder', () => {
         window.dispatchEvent(new CustomEvent('tray-import-folder'))
       })
+      listen('update://status', (e) => {
+        // Could surface a toast/notification; for now console.log
+        console.log('Updater:', e.payload)
+      })
     }).catch(() => {})
   }
 } catch {}

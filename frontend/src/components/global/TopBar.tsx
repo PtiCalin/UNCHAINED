@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppStore, ViewMode } from '../../store/useAppStore'
 import { MediaChoiceModal } from '../MediaChoiceModal'
+import { listen } from '@tauri-apps/api/event'
 
 const modes: { label: string; value: ViewMode; path: string }[] = [
   { label: 'Player', value: 'spotify', path: '/' },
@@ -29,6 +30,17 @@ export const TopBar: React.FC = () => {
     if (choice === 'itunes') navigate('/pro')
     if (choice === 'bandcamp') navigate('/pro')
   }
+  useEffect(() => {
+    let unlisten: (() => void) | null = null
+    // Listen for tray event to open import modal
+    try {
+      listen('tray://import-folder', () => setImportOpen(true)).then((fn) => { unlisten = fn })
+    } catch {}
+    // Also support window dispatch from main.tsx fallback
+    const handler = () => setImportOpen(true)
+    window.addEventListener('tray-import-folder', handler)
+    return () => { if (unlisten) unlisten(); window.removeEventListener('tray-import-folder', handler) }
+  }, [])
   return (
     <header className="flex items-center justify-between px-4 py-3 neo-border glass-panel">
       <div className="flex items-center gap-3">

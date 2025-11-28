@@ -171,6 +171,14 @@ powershell -ExecutionPolicy Bypass -File scripts\run-download-worker.ps1
 ## Desktop Integration
 - Notifications: enabled via Tauri allowlist. Frontend listens to backend SSE at `/sources/events/stream` and shows desktop notifications for `upload_complete` and `download_finished`.
 - System Tray: implemented in `frontend/src-tauri/src/main.rs` with quick actions (Open Library, Import Folder, Exit). Events are emitted to the frontend as `tray://open-library` and `tray://import-folder`.
+### Toast & Update Status
+Real-time status for updater and scans is surfaced via a toast system:
+- Component: `frontend/src/components/global/ToastHost.tsx`
+- Store: `frontend/src/store/useToastStore.ts`
+- Emitted events: `update://status` (from tray "Check for Updates"), folder scan completion
+
+### Updater Manifest Example
+See `update-manifest-example.json` for a template. Replace `SIGNATURE_BASE64_PLACEHOLDER` with the Ed25519 signature and host at an endpoint matching `tauri.conf.json` updater URL pattern.
 - Shortcuts: `scripts/create-shortcuts.ps1` creates Desktop/Start Menu links to the built app.
 
 SSE endpoints:

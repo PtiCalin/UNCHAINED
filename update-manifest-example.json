@@ -1,0 +1,11 @@
+{
+  "version": "0.1.1",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "SIGNATURE_BASE64_PLACEHOLDER",
+      "url": "https://updates.example.com/unchained/0.1.1/UNCHAINED_0.1.1_x64-setup.exe" 
+    }
+  },
+  "notes": "Fixes metadata scan performance and adds tray update check.",
+  "pub_date": "2025-11-28T00:00:00Z"
+}

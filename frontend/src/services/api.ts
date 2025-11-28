@@ -91,3 +91,13 @@ export async function fetchMetadataDiff(track_id: number, temp_ref?: string) {
   if (!res.ok) throw new Error('Failed diff fetch')
   return res.json()
 }
+
+export async function localScan(folder: string, copy = false) {
+  const res = await fetch(`${API_BASE}/sources/local/scan`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ folder, copy })
+  })
+  if (!res.ok) throw new Error('Local scan failed')
+  return res.json()
+}

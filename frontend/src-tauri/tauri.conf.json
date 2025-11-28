@@ -15,5 +15,23 @@
         "height": 800
       }
     ]
+  },
+  "updater": {
+    "active": true,
+    "endpoints": [
+      "https://updates.example.com/unchained/{{target}}/{{current_version}}"
+    ],
+    "dialog": true,
+    "pubkey": "PLACEHOLDER_PUBKEY"
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "windows": {
+      "nsis": {
+        "displayLanguageSelector": false,
+        "license": "LICENSE"
+      }
+    }
   }
 }

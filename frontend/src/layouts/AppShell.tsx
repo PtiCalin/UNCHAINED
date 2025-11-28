@@ -3,6 +3,7 @@ import { useAppStore } from '../store/useAppStore'
 import { TopBar } from '../components/global/TopBar'
 import { Sidebar } from '../components/global/Sidebar'
 import { BottomPlayer } from '../components/global/BottomPlayer'
+import { ToastHost } from '../components/global/ToastHost'
 
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const sidebarOpen = useAppStore((s) => s.sidebarOpen)
@@ -14,6 +15,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         <div className="p-4">{children}</div>
       </div>
       <BottomPlayer />
+      <ToastHost />
     </div>
   )
 }
