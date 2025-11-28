@@ -149,6 +149,105 @@ def init_db(db_path: Path):
         )
         """
     )
+    # DJ analysis results per track (computed features)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS analysis_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            bpm REAL,
+            key TEXT,
+            waveform_path TEXT,
+            beatgrid_json TEXT,
+            energy REAL,
+            analyzer TEXT,
+            analyzed_at TEXT
+        )
+        """
+    )
+    # Cue points per track
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS cue_points (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            label TEXT,
+            position_ms INTEGER,
+            color TEXT,
+            hot_index INTEGER,
+            created_at TEXT,
+            updated_at TEXT
+        )
+        """
+    )
+    # Loops per track
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS loops (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            start_ms INTEGER,
+            end_ms INTEGER,
+            length_beats REAL,
+            quantized INTEGER,
+            active INTEGER,
+            created_at TEXT,
+            updated_at TEXT
+        )
+        """
+    )
+    # Deck runtime states (ephemeral saves)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS deck_states (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            deck_id TEXT,
+            track_id INTEGER,
+            position_ms INTEGER,
+            tempo REAL,
+            pitch REAL,
+            key_shift INTEGER,
+            slip_mode INTEGER,
+            created_at TEXT
+        )
+        """
+    )
+    # Recordings registry
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS recordings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            path_audio TEXT,
+            started_at TEXT,
+            finished_at TEXT,
+            duration_ms INTEGER,
+            notes TEXT
+        )
+        """
+    )
+    # FX presets (chain definitions and parameters)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS fx_presets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            params_json TEXT,
+            created_at TEXT
+        )
+        """
+    )
+    # FX usage history (deck applications)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS fx_usage (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            deck_id TEXT,
+            preset_id INTEGER,
+            track_id INTEGER,
+            applied_at TEXT
+        )
+        """
+    )
     conn.commit()
     conn.close()
 

@@ -101,3 +101,52 @@ export async function localScan(folder: string, copy = false) {
   if (!res.ok) throw new Error('Local scan failed')
   return res.json()
 }
+
+// DJ / Analysis / Cues / Loops / FX
+export async function fetchAnalysis(trackId: number) {
+  const res = await fetch(`${API_BASE}/dj/tracks/${trackId}/analysis`)
+  if (!res.ok) throw new Error('No analysis')
+  return res.json()
+}
+
+export async function upsertCue(trackId: number, label: string, positionMs: number) {
+  const res = await fetch(`${API_BASE}/dj/tracks/${trackId}/cues`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label, position_ms: positionMs })
+  })
+  if (!res.ok) throw new Error('Cue upsert failed')
+  return res.json()
+}
+
+export async function deleteCue(trackId: number, cueId: number) {
+  const res = await fetch(`${API_BASE}/dj/tracks/${trackId}/cues/${cueId}`, { method: 'DELETE' })
+  if (!res.ok) throw new Error('Cue delete failed')
+  return res.json()
+}
+
+export async function addLoop(trackId: number, startMs: number, endMs: number, lengthBeats?: number, quantized = true, active = false) {
+  const res = await fetch(`${API_BASE}/dj/tracks/${trackId}/loops`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ start_ms: startMs, end_ms: endMs, length_beats: lengthBeats, quantized, active })
+  })
+  if (!res.ok) throw new Error('Loop add failed')
+  return res.json()
+}
+
+export async function deleteLoop(trackId: number, loopId: number) {
+  const res = await fetch(`${API_BASE}/dj/tracks/${trackId}/loops/${loopId}`, { method: 'DELETE' })
+  if (!res.ok) throw new Error('Loop delete failed')
+  return res.json()
+}
+
+export async function logFxUsage(deckId: string, presetId: number, trackId: number) {
+  const res = await fetch(`${API_BASE}/dj/fx-usage/log`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ deck_id: deckId, preset_id: presetId, track_id: trackId })
+  })
+  if (!res.ok) throw new Error('FX usage log failed')
+  return res.json()
+}

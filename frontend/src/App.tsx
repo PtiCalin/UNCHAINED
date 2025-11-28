@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { useDJHotkeys } from './hooks/useDJHotkeys'
 import MetadataDiff from './components/MetadataDiff'
 import { AppShell } from './layouts/AppShell'
 import SpotifyHome from './views/Player/Home'
@@ -11,6 +12,7 @@ import AnalyticsIndex from './views/Dashboard/Index'
 import DJStudio from './views/Studio/Studio'
 
 export default function App() {
+  useDJHotkeys()
   return (
     <Routes>
       <Route
