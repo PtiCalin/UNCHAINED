@@ -5,7 +5,7 @@ This document defines the canonical UI plan for UNCHAINED.
 ## Global Principles
 - Modular views; desktop-first responsive behaviors
 - Layered (TopBar, Sidebar, Main, BottomPlayer); DJ Studio overrides
-- Dual modes: casual (Spotify), power-user (iTunes Pro)
+- Dual modes: casual display, data-view
 
 ## App Shell
 - `TopBar`: logo, mode selector, global search, settings/theme, view options

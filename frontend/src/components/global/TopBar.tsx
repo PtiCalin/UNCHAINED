@@ -45,7 +45,7 @@ export const TopBar: React.FC = () => {
         </select>
       </div>
       <div className="flex-1 max-w-xl mx-4">
-        <input className="w-full bg-[#111] border border-[#333] rounded px-3 py-2" placeholder="Search artists, albums, tracks..." />
+        <GlobalSearch />
       </div>
       <div className="flex items-center gap-2 text-sm">
         <button className="px-2 py-1 bg-[#2a2a2a] rounded" onClick={() => setImportOpen(true)}>Import</button>
