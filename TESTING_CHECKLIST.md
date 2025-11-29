@@ -1,0 +1,22 @@
+# UNCHAINED Testing Checklist
+
+- [ ] Install backend and frontend dependencies
+- [ ] Build and run desktop app (Tauri)
+- [ ] Start backend API and confirm health
+- [ ] Import media from local folder
+- [ ] Confirm media appears in Library
+- [ ] Test all core views (Player, Library, Collection, Focus, Dashboard, Studio)
+- [ ] Add/remove decks in Studio, select active deck
+- [ ] Load tracks into decks, play/pause, seek, set/jump cues, set loops, apply FX
+- [ ] Test quantize, key-lock, slip toggles
+- [ ] Confirm cues/loops/FX usage are persisted
+- [ ] Use Pad Grid for samples/loops
+- [ ] Sync decks, test beat alignment
+- [ ] Apply/revert/diff metadata, check provenance
+- [ ] Use tray menu actions
+- [ ] Confirm toast notifications for all actions
+- [ ] Test installer/updater workflow
+- [ ] Validate documentation and repo materials
+- [ ] Restart app, confirm deckOrder/activeDeck persistence
+- [ ] Test error handling and troubleshooting steps
+- [ ] (Optional) Run automated test scripts
