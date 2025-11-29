@@ -1,4 +1,14 @@
 # UNCHAINED
+---
+**Quick Links:**
+- [Testing Guide](./TESTING_GUIDE.md)
+- [Testing Checklist](./TESTING_CHECKLIST.md)
+- [Roadmap](./ROADMAP.md)
+- [UI Architecture](./UI_ARCHITECTURE.md)
+- [DJ Studio Features](./docs/DJ_STUDIO_FEATURES.md)
+- [Known Issues](./docs/KNOWN_ISSUES.md)
+- [Contributors](./docs/CONTRIBUTORS.md)
+---
 
 ![Status](https://img.shields.io/badge/status-alpha-orange) ![License](https://img.shields.io/badge/license-MIT-blue) ![Platform](https://img.shields.io/badge/platform-Windows%2011-0078D4) ![FastAPI](https://img.shields.io/badge/backend-FastAPI-009688) ![React](https://img.shields.io/badge/frontend-React-61DAFB) ![Tauri](https://img.shields.io/badge/desktop-Tauri-FB8C00)
 
@@ -36,7 +46,7 @@ npx tauri build   # Produces Windows installer (NSIS)
 | SSE Desktop Notifications | ✅ | Rich action buttons |
 | System Tray Actions | ✅ | Dynamic progress + badges |
 | Updater (pilot) | ✅ | Delta updates, signing finalized |
-| DJ Studio (layout scaffold) | 🟨 | Beat sync, mixer DSP |
+| DJ Studio (multi-deck, hotkeys, cues/loops/FX, DeckManager UI, analytics) | ✅ | Beat sync, mixer DSP |
 | Analytics Dashboard | 🟨 | Embeddings, clustering |
 | Audio Analysis (BPM/Key) | ⬜ | Phase 2 start |
 | Cloud Sync | ⬜ | Postgres + object storage |
@@ -107,18 +117,16 @@ Frontend (`frontend/.env` optional):
  - `VITE_ENABLE_NOTIFICATIONS` (optional; defaults to true)
 
 ## Screenshots (Placeholders)
-- Library view
-- Track table
-- Analytics dashboard
-- DJ studio
-- Minimal Player
-- Vinyl Timeline
+See [SCREENSHOTS.md](./docs/SCREENSHOTS.md) for images and GIFs.
 
 ## Community & Contributions
-- Issues and PRs welcome
-- PR template: see `.github/PULL_REQUEST_TEMPLATE.md`
+Issues, PRs, and discussions welcome!
+See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for guidelines.
+PR template: see `.github/PULL_REQUEST_TEMPLATE.md`
 
 ## Source Imports & Legal Notes
+## Known Issues
+See [KNOWN_ISSUES.md](./docs/KNOWN_ISSUES.md) for current limitations and workarounds.
 - Spotify: supported for metadata and playlists via `/sources/spotify/playlists/import`. Audio downloads from Spotify are not supported.
 - iTunes/Apple Music: import local iTunes library XML and copy referenced files via `/sources/itunes/library/import`.
 - Bandcamp: queue authorized download links you provide via `/sources/bandcamp/collection/import` or `/sources/downloads/queue`. Downloader will fetch HTTP URLs you own access to.
@@ -330,6 +338,8 @@ You are responsible for ensuring you have rights to any audio you import, scan o
 We welcome issues and PRs. Please read `CONTRIBUTING.md` for environment setup, coding style, branch naming, and PR checklist.
 
 ## License
+## Contributors
+See [CONTRIBUTORS.md](./docs/CONTRIBUTORS.md) for a full list and how to add yourself.
 MIT — see `LICENSE`.
 
 ## FAQ (Early)
