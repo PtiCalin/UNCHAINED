@@ -53,6 +53,10 @@ class AudioEngine {
   private decks: Record<DeckId, DeckState> = {
     A: { ...defaultDeck },
     B: { ...defaultDeck },
+    C: { ...defaultDeck },
+    D: { ...defaultDeck },
+    E: { ...defaultDeck },
+    F: { ...defaultDeck },
   };
   private listeners: Set<(e: EngineEvent) => void> = new Set();
 
