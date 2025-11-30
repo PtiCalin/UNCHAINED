@@ -54,6 +54,19 @@ if (-not (Get-Process -Name "tauri" -ErrorAction SilentlyContinue)) {
   npm run dev
   Pop-Location
 }
+
+# Create a Desktop shortcut to this launcher for convenience
+try {
+  $desktop = [Environment]::GetFolderPath('Desktop')
+  $ws = New-Object -ComObject WScript.Shell
+  $lnk = $ws.CreateShortcut((Join-Path $desktop 'UNCHAINED Portable.lnk'))
+  $lnk.TargetPath = 'powershell.exe'
+  $lnk.Arguments = "-ExecutionPolicy Bypass -File `"$PSScriptRoot\\Launch-UNCHAINED.ps1`""
+  $lnk.WorkingDirectory = $PSScriptRoot
+  $lnk.IconLocation = 'powershell.exe,0'
+  $lnk.Save()
+  Write-Host "Desktop shortcut created: UNCHAINED Portable.lnk" -ForegroundColor Green
+} catch { }
 '@
 $launcherPath = Join-Path $staging "Launch-UNCHAINED.ps1"
 $launcher | Out-File -Encoding UTF8 $launcherPath

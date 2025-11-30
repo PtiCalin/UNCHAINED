@@ -137,6 +137,13 @@ Recompute analytics manually (backend must be running):
 ```
 powershell -ExecutionPolicy Bypass -File scripts\recompute-analytics.ps1 -Clusters 8
 ```
+
+Self-extracting EXE (auto-unzip + launch):
+Prerequisite: Install 7-Zip (ensures `7z.exe` in PATH) and have SFX module at `C:\Program Files\7-Zip\7z.sfx`.
+```
+powershell -ExecutionPolicy Bypass -File scripts\build-sfx-portable.ps1 -SfxOutput UNCHAINED-portable.exe
+```
+Share `UNCHAINED-portable.exe`. On double-click, it extracts to `%LOCALAPPDATA%\UNCHAINEDPortable` and runs `Launch-UNCHAINED.ps1` automatically.
 Troubleshooting:
 - Use `scripts\diagnose-env.ps1` to inspect environment.
 - If `winget` is unavailable, manually install Node (https://nodejs.org) and Rust (https://rustup.rs).
