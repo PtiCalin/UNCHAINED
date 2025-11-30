@@ -88,6 +88,43 @@ class AnalyticsService:
         conn.close()
         return {"computed": computed_count, "model_version": model_version}
 
+    def compute_acoustic_features(self, track_ids: Optional[List[int]] = None) -> Dict[str, Any]:
+        """Stub for acoustic feature extraction using librosa (if installed)."""
+        try:
+            import librosa  # type: ignore
+        except Exception:
+            return {"error": "librosa not installed"}
+        conn = self._get_conn()
+        c = conn.cursor()
+        if track_ids is None:
+            c.execute("SELECT id, path_audio FROM tracks WHERE path_audio IS NOT NULL")
+            rows = c.fetchall()
+        else:
+            placeholders = ",".join("?" * len(track_ids))
+            c.execute(f"SELECT id, path_audio FROM tracks WHERE id IN ({placeholders}) AND path_audio IS NOT NULL", track_ids)
+            rows = c.fetchall()
+        processed = 0
+        for tid, path_audio in rows:
+            try:
+                y, sr = librosa.load(path_audio, sr=22050, mono=True, duration=60)
+                mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13).mean(axis=1).tolist()
+                chroma = librosa.feature.chroma_stft(y=y, sr=sr).mean(axis=1).tolist()
+                spectral_centroid = [float(librosa.feature.spectral_centroid(y=y, sr=sr).mean())]
+                feat_vec = mfcc + chroma + spectral_centroid
+                c.execute(
+                    """
+                    INSERT OR REPLACE INTO track_embeddings (track_id, embedding_vector, model_version, dimensionality, computed_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (tid, json.dumps(feat_vec), "acoustic_v1", len(feat_vec), datetime.utcnow().isoformat())
+                )
+                processed += 1
+            except Exception:
+                continue
+        conn.commit()
+        conn.close()
+        return {"processed": processed, "model_version": "acoustic_v1"}
+
     def _extract_features(self, title, artist, album, genre, duration_ms, year) -> List[float]:
         """
         Placeholder feature extraction from metadata.
