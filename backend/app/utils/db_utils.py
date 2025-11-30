@@ -248,6 +248,57 @@ def init_db(db_path: Path):
         )
         """
     )
+    # Track embeddings (audio feature vectors for similarity and clustering)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS track_embeddings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER UNIQUE,
+            embedding_vector TEXT,
+            model_version TEXT,
+            dimensionality INTEGER,
+            computed_at TEXT
+        )
+        """
+    )
+    # Track clusters (grouping tracks by similarity)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS track_clusters (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id INTEGER,
+            cluster_id INTEGER,
+            algorithm TEXT,
+            distance_to_centroid REAL,
+            computed_at TEXT
+        )
+        """
+    )
+    # Library statistics (aggregate metrics over time)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS library_stats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            metric_name TEXT,
+            metric_value TEXT,
+            computed_at TEXT
+        )
+        """
+    )
+    # Track similarities (precomputed pairwise similarity scores)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS track_similarities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_id_a INTEGER,
+            track_id_b INTEGER,
+            similarity_score REAL,
+            algorithm TEXT,
+            computed_at TEXT,
+            UNIQUE(track_id_a, track_id_b, algorithm)
+        )
+        """
+    )
     conn.commit()
     conn.close()
 
