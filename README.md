@@ -18,14 +18,12 @@
 ```
 git clone https://github.com/PtiCalin/UNCHAINED.git
 cd UNCHAINED
-powershell -ExecutionPolicy Bypass -File scripts\setup-dev.ps1
-powershell -ExecutionPolicy Bypass -File scripts\run-backend.ps1   # API :8000
-cd frontend; npm install; npm run dev                              # UI  :5173
+powershell -ExecutionPolicy Bypass -File scripts\bootstrap-desktop.ps1   # Full env setup (Python venv, Node deps)
+powershell -ExecutionPolicy Bypass -File scripts\first-run.ps1           # Launch backend + frontend dev
 ```
-Optional desktop build:
+Desktop installer build:
 ```
-cd frontend
-npx tauri build   # Produces Windows installer (NSIS)
+powershell -ExecutionPolicy Bypass -File scripts\build-desktop.ps1
 ```
 
 ## Feature Matrix (Early Alpha)
@@ -102,10 +100,49 @@ System tray emits events → UI listens and triggers navigation or modals. Updat
 
 ## Dev Scripts
 - `scripts/setup-dev.ps1`: create venv, install backend dependencies
+ - `scripts/bootstrap-desktop.ps1`: end-to-end environment bootstrap (Python, deps, Node)
 - `scripts/run-backend.ps1`: start FastAPI at `http://127.0.0.1:8000`
 - `scripts/run-frontend.ps1`: start Vite at `http://localhost:5173`
 - `scripts/run-download-worker.ps1`: process queued download jobs
  - `scripts/create-shortcuts.ps1`: create Windows Desktop & Start Menu shortcuts for the built Tauri app
+ - `scripts/build-desktop.ps1`: build Tauri desktop installer
+ - `scripts/first-run.ps1`: launch backend + frontend together
+ - `scripts/diagnose-env.ps1`: print environment diagnostics (versions, key paths)
+
+## Desktop Quick Start (Windows)
+Prerequisites (auto-detected):
+- Python 3.11+
+- Node.js LTS (installed via winget if missing)
+- Rust toolchain (for Tauri build)
+
+One-line bootstrap + run:
+```
+powershell -ExecutionPolicy Bypass -File scripts\bootstrap-desktop.ps1; powershell -ExecutionPolicy Bypass -File scripts\first-run.ps1
+```
+Build installer:
+```
+powershell -ExecutionPolicy Bypass -File scripts\build-desktop.ps1
+```
+Portable (no installer) package:
+```
+powershell -ExecutionPolicy Bypass -File scripts\package-portable.ps1 -Output UNCHAINED-portable.zip
+```
+Distribute `UNCHAINED-portable.zip`. User extracts anywhere and double-clicks `Launch-UNCHAINED.ps1` to:
+1. Create Python venv if absent and install backend requirements
+2. Start backend (FastAPI)
+3. Optionally recompute analytics (embeddings, clusters, stats)
+4. Launch built desktop executable if present, else start dev frontend
+
+Recompute analytics manually (backend must be running):
+```
+powershell -ExecutionPolicy Bypass -File scripts\recompute-analytics.ps1 -Clusters 8
+```
+Troubleshooting:
+- Use `scripts\diagnose-env.ps1` to inspect environment.
+- If `winget` is unavailable, manually install Node (https://nodejs.org) and Rust (https://rustup.rs).
+- Delete `frontend\node_modules` and re-run bootstrap if dependency issues occur.
+ - For portable mode ensure you extracted the zip (do not run inside the compressed folder in Explorer).
+ - To build a fresh portable package after an update: run installer build (optional) then `package-portable.ps1`.
 
 ## Environment Variables
 Backend (`config/.env`):
