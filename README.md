@@ -6,6 +6,8 @@
 - [Roadmap](./ROADMAP.md)
 - [UI Architecture](./UI_ARCHITECTURE.md)
 - [DJ Studio Features](./docs/DJ_STUDIO_FEATURES.md)
+- [DJ Effect System](./docs/DJ_EFFECTS_SYSTEM.md)
+- [Analytics Backend](./docs/ANALYTICS_BACKEND.md)
 - [Known Issues](./docs/KNOWN_ISSUES.md)
 - [Contributors](./docs/CONTRIBUTORS.md)
 ---
@@ -44,7 +46,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build-desktop.ps1
 | SSE Desktop Notifications | ✅ | Rich action buttons |
 | System Tray Actions | ✅ | Dynamic progress + badges |
 | Updater (pilot) | ✅ | Delta updates, signing finalized |
-| DJ Studio (multi-deck, hotkeys, cues/loops/FX, DeckManager UI, analytics) | ✅ | Beat sync, mixer DSP |
+| DJ Studio (multi-deck, cues/loops, **18+ effects**, presets, DeckManager, Mixer) | ✅ | Web Audio DSP, sampler pads |
 | Analytics Dashboard | 🟨 | Embeddings, clustering |
 | Audio Analysis (BPM/Key) | ⬜ | Phase 2 start |
 | Cloud Sync | ⬜ | Postgres + object storage |

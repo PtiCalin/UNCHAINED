@@ -225,13 +225,44 @@ def init_db(db_path: Path):
         )
         """
     )
-    # FX presets (chain definitions and parameters)
+    # Effect definitions (library of available effects)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS effects (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE,
+            category TEXT,
+            description TEXT,
+            default_params_json TEXT,
+            created_at TEXT
+        )
+        """
+    )
+    # FX presets (saved effect chains with custom parameters)
     c.execute(
         """
         CREATE TABLE IF NOT EXISTS fx_presets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
+            description TEXT,
+            category TEXT,
+            effects_json TEXT,
+            is_factory INTEGER DEFAULT 0,
+            created_at TEXT
+        )
+        """
+    )
+    # Effect chains (active effects per deck)
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS effect_chains (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            deck_id TEXT,
+            slot INTEGER,
+            effect_id INTEGER,
             params_json TEXT,
+            enabled INTEGER DEFAULT 1,
+            wet_dry REAL DEFAULT 0.5,
             created_at TEXT
         )
         """

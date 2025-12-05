@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from pathlib import Path
 from ..utils.db_utils import init_db
 from ..services.dj_service import (
@@ -10,9 +10,21 @@ from ..services.dj_service import (
     list_fx_presets, add_fx_preset, delete_fx_preset,
     log_fx_usage, list_fx_usage, fetch_analysis
 )
+from ..services.effect_service import (
+    initialize_effect_library, list_effects, get_effect_categories,
+    list_fx_presets_enhanced, add_fx_preset_enhanced, update_fx_preset,
+    get_deck_effect_chain, add_effect_to_chain, update_effect_params,
+    remove_effect_from_chain, clear_deck_effects, apply_preset_to_deck
+)
 
 LIBRARY_DB = Path("library/db/library.sqlite").resolve()
 init_db(LIBRARY_DB)
+
+# Initialize effect library on startup
+try:
+    initialize_effect_library(LIBRARY_DB)
+except Exception as e:
+    print(f"Effect library initialization: {e}")
 
 router = APIRouter()
 
@@ -154,3 +166,106 @@ def get_track_analysis(track_id: int):
     if not data:
         raise HTTPException(status_code=404, detail="No analysis")
     return {"analysis": data}
+
+# ==================== ENHANCED EFFECTS API ====================
+
+@router.get("/effects")
+def get_effects_list(category: Optional[str] = None):
+    """List all available effects, optionally filtered by category"""
+    effects = list_effects(LIBRARY_DB, category)
+    return {"effects": effects}
+
+@router.get("/effects/categories")
+def get_categories():
+    """Get all effect categories"""
+    categories = get_effect_categories(LIBRARY_DB)
+    return {"categories": categories}
+
+class FxPresetCreateBody(BaseModel):
+    name: str
+    description: str = ""
+    category: str
+    effects_json: str
+
+@router.get("/fx-presets/enhanced")
+def fx_presets_list_enhanced(category: Optional[str] = None):
+    """List all FX presets with enhanced details"""
+    presets = list_fx_presets_enhanced(LIBRARY_DB, category)
+    return {"fx_presets": presets}
+
+@router.post("/fx-presets/enhanced")
+def fx_presets_add_enhanced(body: FxPresetCreateBody):
+    """Create a new custom FX preset"""
+    preset = add_fx_preset_enhanced(LIBRARY_DB, body.name, body.description, body.category, body.effects_json)
+    return {"preset": preset}
+
+class FxPresetUpdateBody(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    effects_json: Optional[str] = None
+
+@router.put("/fx-presets/{preset_id}")
+def fx_preset_update(preset_id: int, body: FxPresetUpdateBody):
+    """Update an existing preset (cannot update factory presets)"""
+    ok = update_fx_preset(LIBRARY_DB, preset_id, body.name, body.description, body.category, body.effects_json)
+    if not ok:
+        raise HTTPException(status_code=403, detail="Cannot update factory preset or preset not found")
+    return {"status": "updated"}
+
+@router.get("/decks/{deck_id}/effects")
+def get_deck_effects(deck_id: str):
+    """Get active effect chain for a deck"""
+    chain = get_deck_effect_chain(LIBRARY_DB, deck_id)
+    return {"deck_id": deck_id, "effects": chain}
+
+class AddEffectBody(BaseModel):
+    effect_name: str
+    slot: int
+    params_json: Optional[str] = None
+    wet_dry: float = 0.5
+
+@router.post("/decks/{deck_id}/effects")
+def add_deck_effect(deck_id: str, body: AddEffectBody):
+    """Add an effect to a deck's chain at specified slot"""
+    try:
+        effect = add_effect_to_chain(LIBRARY_DB, deck_id, body.effect_name, body.slot, body.params_json, body.wet_dry)
+        return {"effect": effect}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+class UpdateEffectBody(BaseModel):
+    params_json: Optional[str] = None
+    wet_dry: Optional[float] = None
+    enabled: Optional[bool] = None
+
+@router.put("/decks/effects/{chain_id}")
+def update_deck_effect(chain_id: int, body: UpdateEffectBody):
+    """Update parameters of an effect in a deck's chain"""
+    ok = update_effect_params(LIBRARY_DB, chain_id, body.params_json, body.wet_dry, body.enabled)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Effect not found")
+    return {"status": "updated"}
+
+@router.delete("/decks/effects/{chain_id}")
+def remove_deck_effect(chain_id: int):
+    """Remove an effect from a deck's chain"""
+    ok = remove_effect_from_chain(LIBRARY_DB, chain_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Effect not found")
+    return {"status": "removed"}
+
+@router.delete("/decks/{deck_id}/effects")
+def clear_all_deck_effects(deck_id: str):
+    """Clear all effects from a deck"""
+    clear_deck_effects(LIBRARY_DB, deck_id)
+    return {"status": "cleared"}
+
+@router.post("/decks/{deck_id}/apply-preset/{preset_id}")
+def apply_fx_preset(deck_id: str, preset_id: int):
+    """Apply a preset's effect chain to a deck"""
+    try:
+        chain = apply_preset_to_deck(LIBRARY_DB, deck_id, preset_id)
+        return {"deck_id": deck_id, "effects": chain}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
