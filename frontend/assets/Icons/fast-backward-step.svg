@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 256 256" fill="none" id="my-svg">
+  <defs><pattern id="a" patternUnits="userSpaceOnUse" width="80" height="80" patternTransform="scale(3.19) rotate(0)"><rect x="0" y="0" width="100%" height="100%" fill="hsla(0,0%,100%,1)"></rect><path d="M-20.133 4.568C-13.178 4.932-6.452 7.376 0 10c6.452 2.624 13.036 5.072 20 5 6.967-.072 13.56-2.341 20-5 6.44-2.659 13.033-4.928 20-5 6.964-.072 13.548 2.376 20 5s13.178 5.068 20.133 5.432" stroke-width="30" stroke="#FFE3E3" fill="none"></path><path d="M-20.133 24.568C-13.178 24.932-6.452 27.376 0 30c6.452 2.624 13.036 5.072 20 5 6.967-.072 13.56-2.341 20-5 6.44-2.659 13.033-4.928 20-5 6.964-.072 13.548 2.376 20 5s13.178 5.068 20.133 5.432" stroke-width="30" stroke="#E4D8DC" fill="none"></path><path d="M-20.133 44.568C-13.178 44.932-6.452 47.376 0 50c6.452 2.624 13.036 5.072 20 5 6.967-.072 13.56-2.341 20-5 6.44-2.659 13.033-4.928 20-5 6.964-.072 13.548 2.376 20 5s13.178 5.068 20.133 5.432" stroke-width="30" stroke="#C9CCD5" fill="none"></path><path d="M-20.133 64.568C-13.178 64.932-6.452 67.376 0 70c6.452 2.624 13.036 5.072 20 5 6.967-.072 13.56-2.341 20-5 6.44-2.659 13.033-4.928 20-5 6.964-.072 13.548 2.376 20 5s13.178 5.068 20.133 5.432" stroke-width="30" stroke="#93B5C6" fill="none"></path></pattern>
+    <linearGradient id="gradient1">
+      <stop class="stop1" offset="0%" stop-color="#8f66ff"></stop>
+      <stop class="stop2" offset="100%" stop-color="#3d12ff"></stop>
+    </linearGradient>
+  </defs>
+  <rect id="backgr" width="256" height="256" fill="none" rx="60"></rect>
+  <g id="group" transform="translate(0,0) scale(1)">
+    <path d="M104.533 187.733C118.597 198.281 138.667 188.246 138.667 170.667V149.333L189.867 187.733C203.931 198.281 224.000 188.246 224.000 170.667V85.333C224.000 67.753 203.931 57.719 189.867 68.266L138.667 106.666V85.333C138.667 67.753 118.597 57.719 104.533 68.266L53.333 106.666V76.800C53.333 70.909 48.558 66.133 42.667 66.133C36.776 66.133 32.000 70.909 32.000 76.800V179.200C32.000 185.091 36.776 189.867 42.667 189.867C48.558 189.867 53.333 185.091 53.333 179.200V149.333L104.533 187.733Z" fill="url(#a)" stroke-width="14" id="filled" stroke="none" stroke-linecap="round" stroke-linejoin="round"></path>
+  </g>
+</svg>

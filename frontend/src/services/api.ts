@@ -7,7 +7,7 @@ export type Track = {
   path_audio?: string
 }
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000'
+import { API_BASE } from './apiBase';
 
 export async function fetchTracks(): Promise<Track[]> {
   const res = await fetch(`${API_BASE}/tracks/`)

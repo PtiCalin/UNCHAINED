@@ -125,6 +125,12 @@ Build installer:
 ```
 powershell -ExecutionPolicy Bypass -File scripts\build-desktop.ps1
 ```
+
+### Distributing to End Users
+- Builds produce a Windows NSIS installer (`.exe`).
+- Upload the installer from:
+  - `frontend\src-tauri\target\release\bundle\nsis\*.exe`
+- End users download the `.exe`, run the installer, and it will create Start Menu + Desktop shortcuts.
 Portable (no installer) package:
 ```
 powershell -ExecutionPolicy Bypass -File scripts\package-portable.ps1 -Output UNCHAINED-portable.zip
