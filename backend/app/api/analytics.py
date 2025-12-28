@@ -7,11 +7,11 @@ from typing import Optional, List
 from pathlib import Path
 
 from backend.app.services.analytics_service import AnalyticsService
-from backend.app.config import settings
 
-router = APIRouter(prefix="/analytics", tags=["analytics"])
-
-analytics_service = AnalyticsService(settings.DB_PATH)
+router = APIRouter(tags=["analytics"])
+# Use default DB path for now; refactor to use config later if needed
+from backend.app.services.analytics_service import DB_PATH as DEFAULT_DB_PATH
+analytics_service = AnalyticsService(DEFAULT_DB_PATH)
 
 
 # ========================
