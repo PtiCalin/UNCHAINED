@@ -2,7 +2,7 @@
 
 ![Status](https://img.shields.io/badge/status-alpha-orange) ![License](https://img.shields.io/badge/license-MIT-blue) ![Platform](https://img.shields.io/badge/platform-Windows%2011-0078D4) ![FastAPI](https://img.shields.io/badge/backend-FastAPI-009688) ![React](https://img.shields.io/badge/frontend-React-61DAFB) ![Tauri](https://img.shields.io/badge/desktop-Tauri-FB8C00)
 
-> A local-first creative AI operating system that unifies generation, editing, provenance, and media memory across image, audio, video, and data.
+> A local-first creative AI operating system that unifies generation, editing, provenance, and media memory across music, images, video, documents, code, and data. The ultimate library of libraries and creative coordination hub, with built-in collaboration, automation, and full ownership. Private, secure, no cloud lock-in. Automate, collaborate, and build AI workflows on your terms with cross-media intelligence, and true data ownership. No cloud required.
 
 ## Product Positioning
 
@@ -104,7 +104,6 @@ powershell -ExecutionPolicy Bypass -File scripts\build-desktop.ps1
 
 ## Vision Guardrails (What UNCHAINED is not)
 
-<<<<<<< HEAD
 
 ## Quick Start (Dev)
 
@@ -224,12 +223,10 @@ Frontend (`frontend/.env` optional):
 
 ## Screenshots (Placeholders)
 See [SCREENSHOTS.md](./docs/SCREENSHOTS.md) for images and GIFs.
-=======
 - Not a SaaS chatbot wrapper.
 - Not a single-model playground.
 - Not cloud-first surveillance software.
 - Not a DAW/Photoshop replacement.
->>>>>>> 0da58b299e8ba346ae5cb0e7bb991b45d5a0180f
 
 ## Community & Contributions
 
