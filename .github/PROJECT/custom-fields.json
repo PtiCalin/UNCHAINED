@@ -1,0 +1,62 @@
+{
+  "project": "@PtiCalin's UNCHAINED project",
+  "recommended_fields": [
+    {
+      "name": "Status",
+      "type": "single_select",
+      "options": ["Backlog", "Ready", "In Progress", "Blocked", "In Review", "Done", "Archived"],
+      "default": "Backlog"
+    },
+    {
+      "name": "Priority",
+      "type": "single_select",
+      "options": ["P0", "P1", "P2", "P3"],
+      "default": "P2"
+    },
+    {
+      "name": "Size",
+      "type": "single_select",
+      "options": ["XS", "S", "M", "L", "XL"],
+      "default": "M"
+    },
+    {
+      "name": "Estimate",
+      "type": "number",
+      "unit": "story_points",
+      "recommended_scale": [1, 2, 3, 5, 8, 13]
+    },
+    {
+      "name": "Start date",
+      "type": "date"
+    },
+    {
+      "name": "Target date",
+      "type": "date"
+    },
+    {
+      "name": "Module",
+      "type": "single_select",
+      "options": ["music", "platform", "image", "voice", "video", "data"],
+      "default": "music"
+    },
+    {
+      "name": "Layer",
+      "type": "single_select",
+      "options": ["backend", "ui", "desktop", "data", "docs", "qa"],
+      "default": "backend"
+    },
+    {
+      "name": "Risk",
+      "type": "single_select",
+      "options": ["Low", "Medium", "High"],
+      "default": "Medium"
+    }
+  ],
+  "view_recommendations": [
+    "Table: All work",
+    "Board: Group by Status",
+    "Roadmap: Group by Priority, timeline by Target date",
+    "Slice: Module = music",
+    "Slice: Layer = desktop"
+  ]
+}
