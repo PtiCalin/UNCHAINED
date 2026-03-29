@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/v2.0.0/tooling/cli/schema.json",
   "productName": "UNCHAINED",
   "version": "0.1.0",
@@ -30,15 +30,7 @@
     "windows": {
       "nsis": {
         "displayLanguageSelector": false,
-        "license": "LICENSE",
-        "startMenuFolder": "UNCHAINED",
-        "shortcut": true,
-        "desktopShortcut": true,
-        "installerHooks": {
-          "finish": {
-            "run": true
-          }
-        }
+        "license": "LICENSE"
       }
     }
   }

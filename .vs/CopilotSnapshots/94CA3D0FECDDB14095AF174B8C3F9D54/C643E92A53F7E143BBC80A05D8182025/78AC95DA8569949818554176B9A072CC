@@ -1,6 +1,6 @@
-param(
+﻿param(
     [string]$AppName = "UNCHAINED",
-    [string]$ExePath = "frontend\\src-tauri\\target\\release\\UNCHAINED.exe"
+    [string]$ExePath = "frontend\\dist\\UNCHAINED.exe"
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,8 +25,7 @@ function New-Shortcut {
 # Ensure executable exists
 if (-not (Test-Path $ExePath)) {
     Write-Host "Executable not found at $ExePath. Build the desktop app first." -ForegroundColor Yellow
-    Write-Host "Try: powershell -ExecutionPolicy Bypass -File scripts\\build-desktop.ps1" -ForegroundColor Yellow
-    Write-Host "Or from frontend/: npx tauri build" -ForegroundColor Yellow
+    Write-Host "Try: npm run tauri build or use scripts\\run-frontend.ps1 to develop."
     exit 1
 }
 

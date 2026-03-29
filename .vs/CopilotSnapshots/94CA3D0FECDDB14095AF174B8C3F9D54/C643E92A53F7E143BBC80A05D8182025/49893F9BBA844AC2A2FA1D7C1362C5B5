@@ -1,4 +1,4 @@
-Param(
+﻿Param(
 	[switch]$PrecomputeAnalytics,
 	[int]$ClusterCount = 8
 )
@@ -37,6 +37,3 @@ if ($PrecomputeAnalytics) {
 }
 
 Write-Host "Desktop build complete. Installer available in frontend\src-tauri\target\release" -ForegroundColor Green
-	Write-Host "Desktop build complete." -ForegroundColor Green
-	Write-Host "Installer: frontend\src-tauri\target\release\bundle\nsis" -ForegroundColor Green
-	Write-Host "Exe:       frontend\src-tauri\target\release\UNCHAINED.exe" -ForegroundColor Green
