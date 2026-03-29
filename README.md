@@ -8,40 +8,48 @@
 
 UNCHAINED is the **platform**. The current music-focused application is now framed as **UNCHAINED Music**, the first major module in the wider ecosystem.
 
+
 ### Platform-level non-negotiables
-- **Local-first execution**: assets, metadata, and model orchestration run on the user's machine.
-- **Unified media library**: image/audio/video/data assets live in one indexed and queryable system.
-- **Job-based workflows**: generation/edit/remix/conversion tasks run as background jobs with logs and retry semantics.
-- **Plugin boundaries**: capabilities are shipped as plugins, not hard-coded one-offs.
-- **Reproducibility**: every output stores model, parameters, seed, tool version, and source lineage.
+- **Local-first execution:** All assets, metadata, models, and workflows run on your machine—never locked to the cloud.
+- **Unified, extensible library of libraries:** Music, images, video, documents, code, 3D, games, and data—indexed, related, and queryable as a single knowledge graph.
+- **Job-based and automated workflows:** Generation, editing, remixing, conversion, and cross-media automation—run as background jobs, with logs, retry, and orchestration.
+- **Plugin and module boundaries:** All capabilities (including AI, automation, and collaboration) are modular, discoverable, and upgradable.
+- **Collaboration and coordination:** Built-in multi-user, multi-device, and team workflows—private by default, with granular sharing and audit trails.
+- **Provenance and ownership:** Every asset and output stores full lineage, model, parameters, tool version, and source—ensuring true data ownership and reproducibility.
+- **Privacy and security:** No cloud lock-in, no forced telemetry, and strong local encryption for sensitive assets and knowledge.
+- **AI workflow orchestration:** Compose, automate, and chain AI and creative tools across all domains—music, images, video, docs, code, 3D, and more.
 
 ## Product Hierarchy
 
 - **UNCHAINED (Platform)**
-  - Core runtime, media library, job engine, model orchestration, and plugin API.
-- **UNCHAINED Music (Current module)**
-  - Metadata-rich music library, provenance tooling, DJ studio, and audio-centric workflows.
-- **Future sibling modules**
-  - UNCHAINED Image
-  - UNCHAINED Voice
-  - UNCHAINED Video
-  - UNCHAINED Data
+  - Core runtime, library of libraries, job engine, model orchestration, plugin/collaboration API, cross-media intelligence.
+- **UNCHAINED Audio**
+  - Music library, provenance, DJ studio, audio analysis, and editing.
+  - Submodules: UNCHAINED Voice, UNCHAINED DJ
+- **UNCHAINED Image**
+  - Image library, editing, generation, and provenance.
+- **UNCHAINED Video**
+  - Video library, editing, generation, and provenance.
+- **UNCHAINED Docs**
+  - Document library, knowledge graph, semantic search, and provenance.
+- **UNCHAINED Code**
+  - Code library, snippet management, AI codegen, and provenance.
+- **UNCHAINED 3D**
+  - 3D asset library, model viewer, and editing.
+- **UNCHAINED Games**
+  - Game asset library, modding, and provenance.
+- **UNCHAINED Data**
+  - Data library, analytics, and visualization.
+
 
 ## Architecture Blueprint
 
 ### Core platform modules
-1. **Library Core**
-   - SQLite metadata DB + deterministic filesystem layout.
-   - Indexing, tags, relationships, and provenance tracking.
-2. **Job System**
-   - Queue-backed background execution.
-   - States: queued → running → succeeded/failed/cancelled.
-   - Streaming logs to UI.
-3. **Model Manager**
-   - Local model registry and health checks.
-   - Ollama as orchestration/reasoning layer.
-4. **Plugin Runtime**
-   - Plugin manifests define capabilities, required models, input/output contracts, and UI presence.
+1. **Library Core:** Unified metadata DB, deterministic storage, cross-domain relationships, and provenance tracking for all asset types.
+2. **Job & Automation Engine:** Background and scheduled jobs, workflow chaining, and automation across all creative domains.
+3. **Model & Workflow Orchestration:** Local registry for AI models, workflow builder for chaining tools and plugins, and health checks.
+4. **Plugin & Collaboration Runtime:** Plugins define capabilities, models, automation, and UI; collaboration API for multi-user and team workflows.
+5. **Security & Privacy Layer:** Local encryption, granular sharing, and audit logging.
 
 ### Reference repository split (target)
 ```text
@@ -51,11 +59,17 @@ UNCHAINED/
 │  ├─ jobs
 │  ├─ models
 │  ├─ plugins
+│  ├─ collab
 │  └─ desktop-shell
-├─ unchained-music
+├─ unchained-audio
+│  ├─ voice
+│  └─ dj
 ├─ unchained-image
-├─ unchained-voice
 ├─ unchained-video
+├─ unchained-docs
+├─ unchained-code
+├─ unchained-3d
+├─ unchained-games
 └─ unchained-data
 ```
 
