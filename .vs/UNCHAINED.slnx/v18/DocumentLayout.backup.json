@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\charl\\source\\repos\\PtiCalin\\UNCHAINED\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\charl\\source\\repos\\PtiCalin\\UNCHAINED\\scripts\\create-shortcuts.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:scripts\\create-shortcuts.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\charl\\source\\repos\\PtiCalin\\UNCHAINED\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,14 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "create-shortcuts.ps1",
-              "DocumentMoniker": "C:\\Users\\charl\\source\\repos\\PtiCalin\\UNCHAINED\\scripts\\create-shortcuts.ps1",
-              "RelativeDocumentMoniker": "scripts\\create-shortcuts.ps1",
-              "ToolTip": "C:\\Users\\charl\\source\\repos\\PtiCalin\\UNCHAINED\\scripts\\create-shortcuts.ps1",
-              "RelativeToolTip": "scripts\\create-shortcuts.ps1",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-01-24T19:00:02.123Z",
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\charl\\source\\repos\\PtiCalin\\UNCHAINED\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\charl\\source\\repos\\PtiCalin\\UNCHAINED\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-03-29T16:14:40.688Z",
               "EditorCaption": ""
             }
           ]
