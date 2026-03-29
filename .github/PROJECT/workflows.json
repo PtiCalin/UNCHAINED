@@ -1,0 +1,93 @@
+{
+  "project": "@PtiCalin's UNCHAINED project",
+  "default_repository": "PtiCalin/UNCHAINED",
+  "workflows": [
+    {
+      "name": "Auto-add to project",
+      "trigger": "item_added_to_repository",
+      "filter": {
+        "types": ["issue", "pull_request"],
+        "repository": "PtiCalin/UNCHAINED"
+      },
+      "actions": [
+        { "set_field": "Status", "value": "Backlog" },
+        { "set_field": "Priority", "value": "P2" },
+        { "set_field": "Size", "value": "M" },
+        { "set_field": "Risk", "value": "Medium" }
+      ]
+    },
+    {
+      "name": "Pull request linked to issue",
+      "trigger": "pull_request_linked_to_issue",
+      "actions": [
+        { "set_field": "Status", "value": "In Review" }
+      ]
+    },
+    {
+      "name": "Code review requested",
+      "trigger": "code_changes_requested",
+      "actions": [
+        { "set_field": "Status", "value": "In Progress" }
+      ]
+    },
+    {
+      "name": "Code review approved",
+      "trigger": "code_review_approved",
+      "actions": [
+        { "set_field": "Status", "value": "Ready" }
+      ]
+    },
+    {
+      "name": "Item reopened",
+      "trigger": "item_reopened",
+      "actions": [
+        { "set_field": "Status", "value": "Ready" }
+      ]
+    },
+    {
+      "name": "Item closed",
+      "trigger": "item_closed",
+      "actions": [
+        { "set_field": "Status", "value": "Done" }
+      ]
+    },
+    {
+      "name": "Pull request merged",
+      "trigger": "pull_request_merged",
+      "actions": [
+        { "set_field": "Status", "value": "Done" }
+      ]
+    },
+    {
+      "name": "Auto-archive items",
+      "trigger": "scheduled",
+      "schedule": "daily",
+      "filter": {
+        "field": "Status",
+        "equals": "Done",
+        "older_than_days": 14
+      },
+      "actions": [
+        { "archive_item": true }
+      ]
+    }
+  ],
+  "manual_policy": {
+    "required_before_in_progress": [
+      "acceptance_criteria",
+      "impacted_layer",
+      "verification_plan"
+    ],
+    "recommended_labels": [
+      "module:music",
+      "module:platform",
+      "layer:backend",
+      "layer:ui",
+      "layer:desktop",
+      "type:bug",
+      "type:feature",
+      "type:tech-debt",
+      "type:docs"
+    ]
+  }
+}
